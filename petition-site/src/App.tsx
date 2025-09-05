@@ -6,8 +6,9 @@ import Counter from "./components/Counter";
 function App() {
   return (
     <div className="App">
-      <h1>Petition Site</h1>
+      <h1>Recollida de Signatures</h1>
       <Counter />
+      <h3>Signa per donar suport a la ILP per la llei electoral catalana</h3>
       <PetitionForm />
     </div>
   );
