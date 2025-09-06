@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 import './App.css';
-import PetitionForm from "./components/PetitionForm";
-import Counter from "./components/Counter";
+import PetitionForm from './components/PetitionForm';
+import Counter from './components/Counter';
 
 function App() {
   return (

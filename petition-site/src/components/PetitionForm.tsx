@@ -1,7 +1,59 @@
+// src/components/PetitionForm.tsx
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { petitionSchema } from "../schemas/petitionSchema";
+import type { PetitionSchemaType } from "../schemas/petitionSchema";
+import { db } from "../firebase"; // your firebase config
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 export default function PetitionForm() {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PetitionSchemaType>({
+    resolver: zodResolver(petitionSchema),
+  });
+
+  const onSubmit = async (data: PetitionSchemaType) => {
+    try {
+      await addDoc(collection(db, "petitions"), {
+        ...data,
+        createdAt: serverTimestamp(),
+      });
+      alert("Petition submitted successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting petition.");
+    }
+  };
+
   return (
-    <section>
-      <button>Signar aqui</button>
-    </section>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4">
+      <div>
+        <label>Full Name</label>
+        <input {...register("fullName")} />
+        {errors.fullName && <p>{errors.fullName.message}</p>}
+      </div>
+
+      <div>
+        <label>Date of Birth</label>
+        <input type="date" {...register("dob")} />
+        {errors.dob && <p>{errors.dob.message}</p>}
+      </div>
+
+      <div>
+        <label>DNI / NIE</label>
+        <input {...register("dni")} />
+        {errors.dni && <p>{errors.dni.message}</p>}
+      </div>
+
+      <div>
+        <label>Address</label>
+        <input {...register("address")} />
+        {errors.address && <p>{errors.address.message}</p>}
+      </div>
+
+      <button type="submit" disabled={isSubmitting}>
+        Submit Petition
+      </button>
+    </form>
   );
 }
