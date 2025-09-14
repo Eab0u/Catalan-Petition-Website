@@ -117,7 +117,7 @@ export default function PetitionForm() {
         {errors.consent && <p className="text-red-600">{errors.consent.message}</p>}
       </div>
 
-      {/* HCaptcha ES_2ee3013e34cd41cbb53e57189e58ff88*/}
+      {/* HCaptchA*/}
       <div>
         <HCaptcha
           ref={captchaRef}
