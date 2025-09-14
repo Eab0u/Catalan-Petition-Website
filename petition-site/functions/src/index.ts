@@ -8,6 +8,9 @@ import ExcelJS from "exceljs";
 import crypto from "crypto";
 import fetch from "node-fetch"; // for Node 16
 import { onRequest } from "firebase-functions/v2/https";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 admin.initializeApp();
 const db = admin.firestore();
