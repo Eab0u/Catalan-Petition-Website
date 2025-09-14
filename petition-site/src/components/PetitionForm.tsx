@@ -1,33 +1,51 @@
-// src/components/PetitionForm.tsx
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { petitionSchema, type PetitionSchemaType } from "../schemas/petitionSchema";
-import { db } from "../firebase"; // your firebase config
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { z } from "zod";
 import { useNavigate } from "react-router-dom";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-/** helper: SHA-256 hex using Web Crypto API */
-async function sha256Hex(message: string) {
-  const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+// ----------------- Schema -----------------
+const petitionSchema = z.object({
+  nom: z.string().min(1, "Nom obligatori"),
+  cognom1: z.string().min(1, "Primer cognom obligatori"),
+  cognom2: z.string().optional(),
+  datanaixement: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data en format YYYY-MM-DD"),
+  tipusid: z
+    .string()
+    .toUpperCase()
+    .regex(/^[0-9]{7,8}[A-Z]$/, "DNI vàlid requerit"),
+  address: z.string().min(5, "Adreça massa curta"),
+  consent: z.literal(true, {
+    message: "Has d’acceptar el consentiment",
+  }),
+});
 
-export default function PetitionForm() {
-  const navigate = useNavigate();
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
+type PetitionFormData = z.infer<typeof petitionSchema>;
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PetitionSchemaType>({
+// ----------------- Component -----------------
+const PetitionForm: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PetitionFormData>({
     resolver: zodResolver(petitionSchema),
   });
 
-  const onSubmit = async (data: PetitionSchemaType) => {
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  // TEMP: auto-set captcha for dev/demo purposes.
+  // Replace this with real hCaptcha or FriendlyCaptcha widget integration.
+  React.useEffect(() => {
+    setCaptchaToken("test-captcha-token");
+  }, []);
+
+  const onSubmit = async (data: PetitionFormData) => {
     setErrorMessage(null);
 
     if (!captchaToken) {
@@ -36,106 +54,92 @@ export default function PetitionForm() {
     }
 
     try {
-      const { nom, cognom1, cognom2, datanaixement, tipusid, address } = data;
-      const numid = tipusid.replace(/\D/g, "");
-      const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${tipusid}`;
-      const signatureHash = await sha256Hex(canonical);
-
-      await addDoc(collection(db, "petitions"), {
-        nom,
-        cognom1,
-        cognom2: cognom2 ?? "",
-        datanaixement,
-        tipusid,
-        numid,
-        address: address ?? "",
-        signatureHash,
+      const payload = {
+        ...data,
+        datanaixement: data.datanaixement.replace(/-/g, ""), // convert YYYY-MM-DD → YYYYMMDD
         captchaToken,
-        createdAt: serverTimestamp(),
+      };
+
+      const res = await fetch("/api/sign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+
+      const json = await res.json();
+      if (!json.success) {
+        throw new Error(json.message || "Error del servidor");
+      }
 
       setSubmitted(true);
       setTimeout(() => navigate("/"), 3000);
     } catch (err) {
       console.error("Error submitting petition:", err);
-      setErrorMessage("S'ha produït un error en enviar la signatura. Torna-ho a provar.");
+      setErrorMessage("S'ha produït un error en enviar la signatura.");
     }
   };
 
   if (submitted) {
     return (
-      <div className="text-center mt-10" aria-live="polite">
-        <h2>Gràcies per signar la petició!</h2>
-        <p>Redirigint a la pàgina principal...</p>
+      <div>
+        <h2>Gràcies per signar!</h2>
+        <p>Seràs redirigit a la pàgina principal en breu...</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: "400px" }}>
       <div>
-        <label>Nom</label>
-        <input {...register("nom")} className="input" />
-        {errors.nom && <p className="text-red-600">{errors.nom.message}</p>}
+        <input placeholder="Nom" {...register("nom")} />
+        {errors.nom && <p>{errors.nom.message}</p>}
       </div>
 
       <div>
-        <label>Primer cognom</label>
-        <input {...register("cognom1")} className="input" />
-        {errors.cognom1 && <p className="text-red-600">{errors.cognom1.message}</p>}
+        <input placeholder="Primer cognom" {...register("cognom1")} />
+        {errors.cognom1 && <p>{errors.cognom1.message}</p>}
       </div>
 
       <div>
-        <label>Segon cognom (opcional)</label>
-        <input {...register("cognom2")} className="input" />
-        {errors.cognom2 && <p className="text-red-600">{errors.cognom2.message}</p>}
+        <input placeholder="Segon cognom" {...register("cognom2")} />
+        {errors.cognom2 && <p>{errors.cognom2.message}</p>}
       </div>
 
       <div>
-        <label>Data de naixement</label>
-        <input type="date" {...register("datanaixement")} className="input" />
-        {errors.datanaixement && <p className="text-red-600">{errors.datanaixement.message}</p>}
+        <input type="date" {...register("datanaixement")} />
+        {errors.datanaixement && <p>{errors.datanaixement.message}</p>}
       </div>
 
       <div>
-        <label>DNI / NIE</label>
-        <input {...register("tipusid")} className="input" />
-        {errors.tipusid && <p className="text-red-600">{errors.tipusid.message}</p>}
+        <input placeholder="DNI (ex: 12345678Z)" {...register("tipusid")} />
+        {errors.tipusid && <p>{errors.tipusid.message}</p>}
       </div>
 
       <div>
-        <label>Adreça</label>
-        <input {...register("address")} className="input" />
-        {errors.address && <p className="text-red-600">{errors.address.message}</p>}
+        <input placeholder="Adreça" {...register("address")} />
+        {errors.address && <p>{errors.address.message}</p>}
       </div>
 
-      <div className="mt-2">
-        <label className="flex items-center gap-2">
-          <input type="checkbox" {...register("consent")} />
-          Accepto el tractament de dades per a aquesta ILP (vegeu la política de privacitat)
+      <div>
+        <label>
+          <input type="checkbox" {...register("consent")} /> Accepto el
+          consentiment
         </label>
-        {errors.consent && <p className="text-red-600">{errors.consent.message}</p>}
+        {errors.consent && <p>{errors.consent.message}</p>}
+      </div>
+
+      {/* Captcha widget placeholder (replace with hCaptcha later) */}
+      <div style={{ margin: "15px 0" }}>
+        <p>[Captcha widget aquí]</p>
       </div>
 
       <div>
-        <HCaptcha
-          ref={captchaRef}
-          sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
-          onVerify={(token) => setCaptchaToken(token)}
-          onExpire={() => setCaptchaToken(null)}
-          languageOverride="ca"
-        />
+        <button type="submit">Enviar</button>
       </div>
 
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        {isSubmitting ? "Enviant..." : "Enviar"}
-      </button>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </form>
   );
-}
+};
+
+export default PetitionForm;
