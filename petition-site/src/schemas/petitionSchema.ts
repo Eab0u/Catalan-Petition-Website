@@ -36,6 +36,7 @@ export const petitionSchema = z.object({
   consent: z
     .boolean()
     .refine((val) => val === true, { message: "Has d'acceptar el tractament de dades" }),
+  captchaToken: z.string().min(1, "Captcha obligatori"),
 });
 
 export type PetitionSchemaType = z.infer<typeof petitionSchema>;
