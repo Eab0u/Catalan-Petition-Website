@@ -14,7 +14,8 @@ export default function Counter({ goal = 50000, refreshInterval = 15000 }: Count
 
     const fetchCount = async () => {
       try {
-        const res = await fetch("/api/counter");
+        const COUNTER_API = process.env.NEXT_PUBLIC_COUNTER_API;
+        const res = await fetch(COUNTER_API || "/api/counter");
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         const json = await res.json();
         if (mounted) {
