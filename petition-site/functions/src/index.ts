@@ -1,5 +1,6 @@
 // functions/src/index.ts
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 import express from "express";
 import helmet from "helmet";
 import { z } from "zod";
@@ -77,8 +78,10 @@ async function checkAndIncrementRateLimit(
 }
 
 // ---------- Captcha verification ----------
+
 async function verifyCaptcha(token: string) {
-  const hcaptchaSecret = process.env.HCAPTCHA_SECRET;
+  const hcaptchaSecret =
+    process.env.HCAPTCHA_SECRET || functions.config().hcaptcha?.secret;
   if (!hcaptchaSecret) throw new Error("Captcha secret not configured.");
 
   const params = new URLSearchParams();
@@ -104,8 +107,10 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://petition-site-22334.web.app",
   "https://petition-site-22334.firebaseapp.com",
+  "https://api-6n6hw37u3a-ew.a.run.app",
 ];
 app.use((req, res, next) => {
+  console.log("Origin header:", req.headers.origin);
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
