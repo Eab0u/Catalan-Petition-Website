@@ -2,21 +2,28 @@ import { useEffect, useState } from "react";
 
 interface CounterProps {
   goal?: number; // optional, defaults to 50,000
-  refreshInterval?: number; // optional, defaults to 15 seconds
+  refreshInterval?: number; // optional, defaults to 15s
 }
 
-export default function Counter({ goal = 50000, refreshInterval = 15000 }: CounterProps) {
+export default function Counter({
+  goal = 50000,
+  refreshInterval = 15000,
+}: CounterProps) {
   const [count, setCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
+    const API_BASE = import.meta.env.DEV
+      ? import.meta.env.VITE_API_BASE // Cloud Run in dev
+      : ""; // relative /api in prod
+
     const fetchCount = async () => {
       try {
-        const COUNTER_API = process.env.NEXT_PUBLIC_COUNTER_API;
-        const res = await fetch(COUNTER_API || "/api/counter");
+        const res = await fetch(`${API_BASE}/api/counter`);
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+
         const json = await res.json();
         if (mounted) {
           if (json.success) {
@@ -34,6 +41,7 @@ export default function Counter({ goal = 50000, refreshInterval = 15000 }: Count
 
     fetchCount();
     const interval = setInterval(fetchCount, refreshInterval);
+
     return () => {
       mounted = false;
       clearInterval(interval);

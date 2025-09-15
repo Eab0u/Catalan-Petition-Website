@@ -24,7 +24,7 @@ export const petitionSchema = z.object({
     .min(1, "El primer cognom és obligatori")
     .max(50, "Max 50 caràcters"),
   cognom2: z.string().max(50, "Max 50 caràcters").optional().or(z.literal("")),
-  // Expect the date input as "YYYY-MM-DD"; transform to "YYYYMMDD"
+  // Accept "YYYY-MM-DD" and transform to "YYYYMMDD"
   datanaixement: z
     .string()
     .min(10, "La data és obligatòria")
@@ -32,11 +32,11 @@ export const petitionSchema = z.object({
     .transform((val) => val.replace(/-/g, "")),
   tipusid: dniOrNieSchema,
   address: z.string().max(200, "Max 200 caràcters").optional(),
-  // Use boolean + refine for compatibility and a clear error message
   consent: z
     .boolean()
-    .refine((val) => val === true, { message: "Has d'acceptar el tractament de dades" }),
-  captchaToken: z.string().min(1, "Captcha obligatori"),
+    .refine((val) => val === true, {
+      message: "Has d'acceptar el tractament de dades",
+    }),
 });
 
 export type PetitionSchemaType = z.infer<typeof petitionSchema>;

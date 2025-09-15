@@ -1,145 +1,199 @@
-import React, { useState } from "react";
+// src/components/PetitionForm.tsx
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { petitionSchema, type PetitionSchemaType } from "../schemas/petitionSchema";
 import { useNavigate } from "react-router-dom";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-// ----------------- Schema -----------------
-const petitionSchema = z.object({
-  nom: z.string().min(1, "Nom obligatori"),
-  cognom1: z.string().min(1, "Primer cognom obligatori"),
-  cognom2: z.string().optional(),
-  datanaixement: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data en format YYYY-MM-DD"),
-  tipusid: z
-    .string()
-    .toUpperCase()
-    .regex(/^[0-9]{7,8}[A-Z]$/, "DNI vàlid requerit"),
-  address: z.string().min(5, "Adreça massa curta"),
-  consent: z.literal(true, {
-    message: "Has d’acceptar el consentiment",
-  }),
-});
+/** helper: SHA-256 hex using Web Crypto API */
+async function sha256Hex(message: string) {
+  const msgUint8 = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
-type PetitionFormData = z.infer<typeof petitionSchema>;
+// Expected backend response
+interface ApiResponse {
+  success: boolean;
+  message?: string;
+}
 
-// ----------------- Component -----------------
-const PetitionForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PetitionFormData>({
-    resolver: zodResolver(petitionSchema),
-  });
-
+export default function PetitionForm() {
+  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const captchaRef = useRef<HCaptcha>(null);
 
-  // TEMP: auto-set captcha for dev/demo purposes.
-  // Replace this with real hCaptcha or FriendlyCaptcha widget integration.
-  React.useEffect(() => {
-    setCaptchaToken("test-captcha-token");
-  }, []);
+  const API_BASE = import.meta.env.DEV
+  ? import.meta.env.VITE_API_BASE // use Cloud Run in dev
+  : ""; // in prod, use relative /api
 
-  const onSubmit = async (data: PetitionFormData) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<PetitionSchemaType>({
+    resolver: zodResolver(petitionSchema),
+  });
+
+  const onSubmit = async (data: PetitionSchemaType) => {
+    console.log("✅ onSubmit fired with data:", data, "captcha:", captchaToken);
     setErrorMessage(null);
 
     if (!captchaToken) {
+      console.warn("⚠️ Captcha missing, blocking submission");
       setErrorMessage("Si us plau, completa el captcha!");
       return;
     }
 
     try {
-      const payload = {
-        ...data,
-        datanaixement: data.datanaixement.replace(/-/g, ""), // convert YYYY-MM-DD → YYYYMMDD
-        captchaToken,
-      };
+      const { nom, cognom1, cognom2, datanaixement, tipusid, address } = data;
+      const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${tipusid}`;
+      const signatureHash = await sha256Hex(canonical);
 
-      const res = await fetch("/api/sign", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      console.log("📡 Sending POST /api/sign with payload:", {
+        nom,
+        cognom1,
+        cognom2,
+        datanaixement,
+        tipusid,
+        address,
+        captchaToken,
+        signatureHash,
       });
 
-      const json = await res.json();
-      if (!json.success) {
-        throw new Error(json.message || "Error del servidor");
+      const res = await fetch(`${API_BASE}/api/sign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nom,
+          cognom1,
+          cognom2,
+          datanaixement,
+          tipusid,
+          address,
+          captchaToken,
+          signatureHash,
+        }),
+      });
+
+      let json: ApiResponse;
+      try {
+        json = (await res.json()) as ApiResponse;
+      } catch {
+        throw new Error(`Invalid JSON response from server (status ${res.status})`);
       }
 
+      console.log("📥 Sign response:", res.status, json);
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || `Sign error, status ${res.status}`);
+      }
+
+      // success 🎉
+      console.log("✅ Petition submitted successfully!");
       setSubmitted(true);
       setTimeout(() => navigate("/"), 3000);
     } catch (err) {
-      console.error("Error submitting petition:", err);
-      setErrorMessage("S'ha produït un error en enviar la signatura.");
+      const error = err instanceof Error ? err.message : String(err);
+      console.error("❌ Error submitting petition:", error);
+      setErrorMessage(error || "S'ha produït un error en enviar la signatura. Torna-ho a provar.");
     }
   };
 
   if (submitted) {
     return (
-      <div>
-        <h2>Gràcies per signar!</h2>
-        <p>Seràs redirigit a la pàgina principal en breu...</p>
+      <div className="text-center mt-10" aria-live="polite">
+        <h2>Gràcies per signar la petició!</h2>
+        <p>Redirigint a la pàgina principal...</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: "400px" }}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.log("📝 Raw form submit triggered");
+        handleSubmit(onSubmit, (errors) => {
+          console.warn("❌ Validation failed:", JSON.stringify(errors, null, 2));
+        })(e);
+      }}
+      className="max-w-md mx-auto p-4 space-y-4"
+      noValidate
+    >
       <div>
-        <input placeholder="Nom" {...register("nom")} />
-        {errors.nom && <p>{errors.nom.message}</p>}
+        <label>Nom</label>
+        <input {...register("nom")} className="input" />
+        {errors.nom && <p className="text-red-600">{errors.nom.message}</p>}
       </div>
 
       <div>
-        <input placeholder="Primer cognom" {...register("cognom1")} />
-        {errors.cognom1 && <p>{errors.cognom1.message}</p>}
+        <label>Primer cognom</label>
+        <input {...register("cognom1")} className="input" />
+        {errors.cognom1 && <p className="text-red-600">{errors.cognom1.message}</p>}
       </div>
 
       <div>
-        <input placeholder="Segon cognom" {...register("cognom2")} />
-        {errors.cognom2 && <p>{errors.cognom2.message}</p>}
+        <label>Segon cognom (opcional)</label>
+        <input {...register("cognom2")} className="input" />
+        {errors.cognom2 && <p className="text-red-600">{errors.cognom2.message}</p>}
       </div>
 
       <div>
-        <input type="date" {...register("datanaixement")} />
-        {errors.datanaixement && <p>{errors.datanaixement.message}</p>}
+        <label>Data de naixement</label>
+        <input type="date" {...register("datanaixement")} className="input" />
+        {errors.datanaixement && <p className="text-red-600">{errors.datanaixement.message}</p>}
       </div>
 
       <div>
-        <input placeholder="DNI (ex: 12345678Z)" {...register("tipusid")} />
-        {errors.tipusid && <p>{errors.tipusid.message}</p>}
+        <label>DNI / NIE</label>
+        <input {...register("tipusid")} className="input" />
+        {errors.tipusid && <p className="text-red-600">{errors.tipusid.message}</p>}
       </div>
 
       <div>
-        <input placeholder="Adreça" {...register("address")} />
-        {errors.address && <p>{errors.address.message}</p>}
+        <label>Adreça</label>
+        <input {...register("address")} className="input" />
+        {errors.address && <p className="text-red-600">{errors.address.message}</p>}
       </div>
 
-      <div>
-        <label>
-          <input type="checkbox" {...register("consent")} /> Accepto el
-          consentiment
+      <div className="mt-2">
+        <label className="flex items-center gap-2">
+          <input type="checkbox" {...register("consent")} />
+          Accepto el tractament de dades per a aquesta ILP (vegeu la política de privacitat)
         </label>
-        {errors.consent && <p>{errors.consent.message}</p>}
-      </div>
-
-      {/* Captcha widget placeholder (replace with hCaptcha later) */}
-      <div style={{ margin: "15px 0" }}>
-        <p>[Captcha widget aquí]</p>
+        {errors.consent && <p className="text-red-600">{errors.consent.message}</p>}
       </div>
 
       <div>
-        <button type="submit">Enviar</button>
+        <HCaptcha
+          ref={captchaRef}
+          sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
+          onVerify={(token) => {
+            console.log("✅ Captcha verified:", token);
+            setCaptchaToken(token);
+          }}
+          onExpire={() => {
+            console.warn("⚠️ Captcha expired");
+            setCaptchaToken(null);
+          }}
+          languageOverride="ca"
+        />
       </div>
 
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+      >
+        {isSubmitting ? "Enviant..." : "Enviar"}
+      </button>
     </form>
   );
-};
-
-export default PetitionForm;
+}
