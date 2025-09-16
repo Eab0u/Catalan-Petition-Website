@@ -4,7 +4,7 @@ export type PetitionFormData = {
   cognom1: string;
   cognom2?: string;
   datanaixement: string; // YYYYMMDD (we transform client date -> this format)
-  tipusid: string; // DNI/NIE uppercase, e.g. "12345678A" or "X1234567T"
+  dni: string; // DNI/NIE uppercase, e.g. "12345678A" or "X1234567T"
   address?: string;
   consent: boolean;
 };

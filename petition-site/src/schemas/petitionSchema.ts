@@ -11,9 +11,9 @@ const nieRegex = /^[XYZxyz][0-9]{7}[A-Za-z]$/;
 
 const dniOrNieSchema = z
   .string()
-  .min(2, "DNI/NIE required")
+  .min(2, "DNI required")
   .refine((val) => dniRegex.test(val) || nieRegex.test(val), {
-    message: "DNI/NIE format invalid",
+    message: "DNI format invalid",
   })
   .transform((val) => val.toUpperCase());
 
@@ -30,7 +30,7 @@ export const petitionSchema = z.object({
     .min(10, "La data és obligatòria")
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Format de data invàlid (YYYY-MM-DD)")
     .transform((val) => val.replace(/-/g, "")),
-  tipusid: dniOrNieSchema,
+  dni: dniOrNieSchema,
   address: z.string().max(200, "Max 200 caràcters").optional(),
   consent: z
     .boolean()

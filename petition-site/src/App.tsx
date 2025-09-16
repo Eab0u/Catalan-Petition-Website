@@ -7,22 +7,50 @@ function App() {
   const navigate = useNavigate();
 
   const goToForm = () => {
-    navigate("/sign"); // Redirects to the PetitionForm page
+    navigate("/sign");
   };
 
   return (
-    <div className="App text-center mt-10">
-      <h1>Recollida de Signatures</h1>
-      <Counter />
-      <h3>Signa per donar suport a la ILP per la llei electoral catalana</h3>
+    <>
+      {/* Hero Section */}
+      <main className="hero">
+        {/* Background image */}
+        <img
+          src="/GDCSagradaFamilia.png" // 👈 place image in /public/
+          alt="Catalan background"
+          className="hero__bg"
+        />
 
-      <button
-        onClick={goToForm}
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded"
-      >
-        Signa la Petició
-      </button>
-    </div>
+        {/* Yellow overlay */}
+        <div className="hero__overlay" />
+
+        {/* Content */}
+        <div className="hero__content">
+          <h1 className="hero__title">Recollida de Signatures</h1>
+
+          <p className="hero__subtitle">
+            Dona suport a la ILP per una llei electoral justa a Catalunya.
+          </p>
+
+          <Counter />
+
+          <button onClick={goToForm} className="hero__button">
+            Signa la Petició
+          </button>
+        </div>
+      </main>
+
+      {/* Black Section */}
+      <section className="info-section">
+        <div className="info-content">
+          <h2>Per què aquesta ILP?</h2>
+          <p>
+            Aquesta iniciativa busca establir una llei electoral més justa i
+            representativa per a Catalunya. Junts podem fer-ho realitat.
+          </p>
+        </div>
+      </section>
+    </>
   );
 }
 

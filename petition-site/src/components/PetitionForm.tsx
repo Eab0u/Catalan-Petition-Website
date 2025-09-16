@@ -50,8 +50,8 @@ export default function PetitionForm() {
     }
 
     try {
-      const { nom, cognom1, cognom2, datanaixement, tipusid, address } = data;
-      const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${tipusid}`;
+      const { nom, cognom1, cognom2, datanaixement, dni, address } = data;
+      const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${dni}`;
       const signatureHash = await sha256Hex(canonical);
 
       console.log("📡 Sending POST /api/sign with payload:", {
@@ -59,7 +59,7 @@ export default function PetitionForm() {
         cognom1,
         cognom2,
         datanaixement,
-        tipusid,
+        dni,
         address,
         captchaToken,
         signatureHash,
@@ -73,7 +73,7 @@ export default function PetitionForm() {
           cognom1,
           cognom2,
           datanaixement,
-          tipusid,
+          dni,
           address,
           captchaToken,
           signatureHash,
@@ -150,9 +150,9 @@ export default function PetitionForm() {
       </div>
 
       <div>
-        <label>DNI / NIE</label>
-        <input {...register("tipusid")} className="input" />
-        {errors.tipusid && <p className="text-red-600">{errors.tipusid.message}</p>}
+        <label>DNI</label>
+        <input {...register("dni")} className="input" />
+        {errors.dni && <p className="text-red-600">{errors.dni.message}</p>}
       </div>
 
       <div>
