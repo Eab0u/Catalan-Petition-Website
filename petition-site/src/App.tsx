@@ -1,7 +1,8 @@
 import React from "react";
-import "./App.css";
+import "./index.css";
 import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
+import NavBar from "./components/NavBar";
 
 function App() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ function App() {
 
   return (
     <>
+
+    <NavBar />
       {/* Hero Section */}
       <main className="hero">
         {/* Background image */}
@@ -26,7 +29,7 @@ function App() {
 
         {/* Content */}
         <div className="hero__content">
-          <h1 className="hero__title">Recollida de Signatures</h1>
+          <h1 className="font-vastago font-bold">Recollida de Signatures</h1>
 
           <p className="hero__subtitle">
             Dona suport a la ILP per una llei electoral justa a Catalunya.
@@ -43,6 +46,7 @@ function App() {
       {/* Black Section */}
       <section className="info-section">
         <div className="info-content">
+          <p className="text-red-500 text-3xl">Tailwind is working!</p>
           <h2>Per què aquesta ILP?</h2>
           <p>
             Aquesta iniciativa busca establir una llei electoral més justa i

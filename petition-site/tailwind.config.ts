@@ -9,6 +9,9 @@ export default {
         catalanYellow: "#ffcc00",
         catalanRed: "#cc0000",
       },
+      fontFamily: {
+        vastago: ['"Vastago Grotesk"', 'sans-serif'],
+      },
     },
   },
 } satisfies Config;
