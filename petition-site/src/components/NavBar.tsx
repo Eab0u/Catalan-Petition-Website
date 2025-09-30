@@ -1,31 +1,95 @@
-import { Link } from "react-router-dom";
+﻿import { useEffect, useState } from "react";
+
+interface NavItemConfig {
+  text: string;
+  onClick: () => void;
+}
+
+interface RemoteNavItem {
+  text: string;
+}
+
+function NavItem({ text, onClick }: NavItemConfig) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-sm font-medium tracking-wide text-neutral-900 transition-colors duration-150 hover:text-neutral-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+    >
+      {text}
+    </button>
+  );
+}
 
 export default function NavBar() {
-  return (
-    <nav className="fixed top-30 left-1/2 -translate-x-1/2 flex items-center justify-between w-[60%] max-w-6xl px-10 py-3 rounded-full bg-gradient-to-r from-[#4ba2ff] to-[#b8e3ff] shadow-lg font-vastago z-50">
-      {/* Left logo */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow-md">
-          <span className="text-xs font-bold text-catalanBlue">&lt;ADC/&gt;</span>
-        </div>
-        <span className="font-bold text-gray-900">App Dev Club</span>
-      </div>
+  const [navItems, setNavItems] = useState<NavItemConfig[]>([
+    { text: "Experience", onClick: () => alert("Navigate to Experience") },
+    { text: "Testimonials", onClick: () => alert("Navigate to Testimonials") },
+    { text: "Pricing", onClick: () => alert("Navigate to Pricing") },
+    { text: "FAQ", onClick: () => alert("Navigate to FAQ") },
+  ]);
 
-      {/* Right links */}
-      <ul className="flex items-center gap-10 list-none m-0 p-0 text-gray-800 font-medium">
-        <li><Link to="/about" className="hover:text-catalanBlue">About</Link></li>
-        <li><Link to="/projects" className="hover:text-catalanBlue">Projects</Link></li>
-        <li><Link to="/sponsors" className="hover:text-catalanBlue">Sponsors</Link></li>
-        <li><Link to="/contact" className="hover:text-catalanBlue">Contact Us</Link></li>
-        <li>
-          <Link
-            to="/apply"
-            className="px-4 py-1.5 rounded-full bg-white text-catalanBlue font-semibold shadow hover:bg-gray-100 transition"
-          >
-            Apply Now
-          </Link>
-        </li>
-      </ul>
-    </nav>
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchNavItems() {
+      try {
+        const response = await fetch("/api/navItems");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch nav items: ${response.status}`);
+        }
+
+        const data: RemoteNavItem[] = await response.json();
+        if (!cancelled && Array.isArray(data)) {
+          setNavItems(
+            data.map((item) => ({
+              text: item.text,
+              onClick: () => alert(`Navigate to ${item.text}`),
+            })),
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch navigation items", error);
+      }
+    }
+
+    fetchNavItems();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <header className="fixed left-1/2 top-6 z-50 w-full max-w-5xl -translate-x-1/2 px-4">
+      <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-neutral-200 bg-white/90 px-6 py-4 shadow-lg backdrop-blur-lg sm:flex-nowrap sm:gap-6 sm:px-10">
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
+            <img
+              loading="lazy"
+              src="/GDClogo.png"
+              alt="Generalitat de Catalunya logo"
+              className="h-6 w-6 object-contain"
+            />
+          </div>
+          <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-900">
+            Harmony
+          </span>
+        </div>
+
+        <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-neutral-900 sm:w-auto sm:flex-nowrap">
+          {navItems.map((item, index) => (
+            <NavItem key={`${item.text}-${index}`} text={item.text} onClick={item.onClick} />
+          ))}
+        </nav>
+
+        <button
+          type="button"
+          onClick={() => alert("Download Now button clicked")}
+          className="shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
+        >
+          Download Now
+        </button>
+      </div>
+    </header>
   );
 }

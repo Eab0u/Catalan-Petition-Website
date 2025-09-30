@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,md}'",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tailwind:init": "tailwindcss init -p"
   },
   "dependencies": {
     "@hcaptcha/react-hcaptcha": "^1.12.1",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@typescript-eslint/eslint-plugin": "^8.42.0",
@@ -43,5 +45,10 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

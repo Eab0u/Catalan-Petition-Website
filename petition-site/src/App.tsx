@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import "./index.css";
 import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
@@ -13,43 +13,39 @@ function App() {
 
   return (
     <>
-
-    <NavBar />
-      {/* Hero Section */}
+      <NavBar />
       <main className="hero">
-        {/* Background image */}
         <img
-          src="/GDCSagradaFamilia.png" // 👈 place image in /public/
+          src="/GDCSagradaFamilia.png"
           alt="Catalan background"
           className="hero__bg"
         />
-
-        {/* Yellow overlay */}
         <div className="hero__overlay" />
-
-        {/* Content */}
         <div className="hero__content">
-          <h1 className="font-vastago font-bold">Recollida de Signatures</h1>
-
+          <h1 className="hero__title font-vastago font-bold">
+            Recollida de Signatures
+          </h1>
           <p className="hero__subtitle">
             Dona suport a la ILP per una llei electoral justa a Catalunya.
           </p>
-
-          <Counter />
-
-          <button onClick={goToForm} className="hero__button">
-            Signa la Petició
+          <div className="mt-8">
+            <Counter />
+          </div>
+          <button
+            onClick={goToForm}
+            className="hero__button"
+          >
+            Signa la Peticio
           </button>
         </div>
       </main>
 
-      {/* Black Section */}
       <section className="info-section">
         <div className="info-content">
           <p className="text-red-500 text-3xl">Tailwind is working!</p>
-          <h2>Per què aquesta ILP?</h2>
+          <h2>Per que aquesta ILP?</h2>
           <p>
-            Aquesta iniciativa busca establir una llei electoral més justa i
+            Aquesta iniciativa busca establir una llei electoral mes justa i
             representativa per a Catalunya. Junts podem fer-ho realitat.
           </p>
         </div>
