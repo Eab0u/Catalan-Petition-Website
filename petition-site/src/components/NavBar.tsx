@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface NavItemConfig {
   text: string;
@@ -22,11 +23,14 @@ function NavItem({ text, onClick }: NavItemConfig) {
 }
 
 export default function NavBar() {
+  const navigate = useNavigate();
+
   const [navItems, setNavItems] = useState<NavItemConfig[]>([
-    { text: "Experience", onClick: () => alert("Navigate to Experience") },
-    { text: "Testimonials", onClick: () => alert("Navigate to Testimonials") },
-    { text: "Pricing", onClick: () => alert("Navigate to Pricing") },
+    { text: "Info", onClick: () => alert("Navigate to Info") },
+    { text: "About", onClick: () => alert("Navigate to About") },
+    { text: "Security", onClick: () => alert("Navigate to Security") },
     { text: "FAQ", onClick: () => alert("Navigate to FAQ") },
+    { text: "Contact", onClick: () => alert("Navigate to Contact") },
   ]);
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export default function NavBar() {
             data.map((item) => ({
               text: item.text,
               onClick: () => alert(`Navigate to ${item.text}`),
-            })),
+            }))
           );
         }
       } catch (error) {
@@ -61,7 +65,8 @@ export default function NavBar() {
 
   return (
     <header className="fixed left-1/2 top-6 z-50 w-full max-w-5xl -translate-x-1/2 px-4">
-      <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-neutral-200 bg-white/90 px-6 py-4 shadow-lg backdrop-blur-lg sm:flex-nowrap sm:gap-6 sm:px-10">
+      <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/30 bg-white/20 px-6 py-4 shadow-lg backdrop-blur-xl sm:flex-nowrap sm:gap-6 sm:px-10">
+        {/* Logo */}
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
             <img
@@ -72,22 +77,24 @@ export default function NavBar() {
             />
           </div>
           <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-900">
-            Harmony
+            Generalitat De Catalunya
           </span>
         </div>
 
+        {/* Nav items */}
         <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-neutral-900 sm:w-auto sm:flex-nowrap">
           {navItems.map((item, index) => (
             <NavItem key={`${item.text}-${index}`} text={item.text} onClick={item.onClick} />
           ))}
         </nav>
 
+        {/* CTA button */}
         <button
           type="button"
-          onClick={() => alert("Download Now button clicked")}
-          className="shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
+          onClick={() => navigate("/sign")}
+          className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
         >
-          Download Now
+          Signa la Petició
         </button>
       </div>
     </header>
