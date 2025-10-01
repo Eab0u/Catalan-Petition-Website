@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Renderer, Camera, Geometry, Program, Mesh } from "ogl";
-import "./Particles.css";
 
 const defaultColors = ["#ffffff", "#ffffff", "#ffffff"];
 
@@ -16,7 +15,7 @@ const hexToRgb = (hex: string) => {
   const r = ((int >> 16) & 255) / 255;
   const g = ((int >> 8) & 255) / 255;
   const b = (int & 255) / 255;
-  return [r, g, b];
+  return [r,g,b];
 };
 
 const vertex = /* glsl */ `
@@ -84,15 +83,16 @@ const fragment = /* glsl */ `
   }
 `;
 
+
 const Particles = ({
   particleCount = 200,
-  particleSpread = 10,
+  particleSpread = 100,
   speed = 0.1,
   particleColors,
   moveParticlesOnHover = false,
   particleHoverFactor = 1,
   alphaParticles = false,
-  particleBaseSize = 100,
+  particleBaseSize = 200,
   sizeRandomness = 1,
   cameraDistance = 20,
   disableRotation = false,
@@ -121,6 +121,8 @@ const Particles = ({
     const renderer = new Renderer({ depth: false, alpha: true });
     const gl = renderer.gl;
     container.appendChild(gl.canvas);
+
+    // Transparent canvas
     gl.clearColor(0, 0, 0, 0);
 
     const camera = new Camera(gl, { fov: 15 });
@@ -143,7 +145,7 @@ const Particles = ({
     };
 
     if (moveParticlesOnHover) {
-      container.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mousemove", handleMouseMove);
     }
 
     const positions = new Float32Array(particleCount * 3);
@@ -213,9 +215,6 @@ const Particles = ({
       if (moveParticlesOnHover) {
         particles.position.x = -mouseRef.current.x * particleHoverFactor;
         particles.position.y = -mouseRef.current.y * particleHoverFactor;
-      } else {
-        particles.position.x = 0;
-        particles.position.y = 0;
       }
 
       if (!disableRotation) {
@@ -243,6 +242,7 @@ const Particles = ({
     particleCount,
     particleSpread,
     speed,
+    particleColors,
     moveParticlesOnHover,
     particleHoverFactor,
     alphaParticles,
@@ -252,7 +252,12 @@ const Particles = ({
     disableRotation,
   ]);
 
-  return <div ref={containerRef} className={`particles-container ${className}`} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`absolute inset-0 w-full h-full overflow-hidden ${className ?? ""}`}
+    />
+  );
 };
 
 export default Particles;

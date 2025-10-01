@@ -15,7 +15,7 @@ function NavItem({ text, onClick }: NavItemConfig) {
     <button
       type="button"
       onClick={onClick}
-      className="cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-sm font-medium tracking-wide text-neutral-900 transition-colors duration-150 hover:text-neutral-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      className="cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-sm font-medium tracking-wide text-white transition-colors duration-150 hover:text-neutral-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
     >
       {text}
     </button>
@@ -65,7 +65,7 @@ export default function NavBar() {
 
   return (
     <header className="fixed left-1/2 top-6 z-50 w-full max-w-5xl -translate-x-1/2 px-4">
-      <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/30 bg-white/20 px-6 py-4 shadow-lg backdrop-blur-xl sm:flex-nowrap sm:gap-6 sm:px-10">
+      <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/30 bg-white/10 px-6 py-4 shadow-lg backdrop-blur-xl sm:flex-nowrap sm:gap-6 sm:px-10">
         {/* Logo */}
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
@@ -76,13 +76,13 @@ export default function NavBar() {
               className="h-6 w-6 object-contain"
             />
           </div>
-          <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-900">
+          <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-100">
             Generalitat De Catalunya
           </span>
         </div>
 
         {/* Nav items */}
-        <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-neutral-900 sm:w-auto sm:flex-nowrap">
+        <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-white sm:w-auto sm:flex-nowrap">
           {navItems.map((item, index) => (
             <NavItem key={`${item.text}-${index}`} text={item.text} onClick={item.onClick} />
           ))}
@@ -92,7 +92,7 @@ export default function NavBar() {
         <button
           type="button"
           onClick={() => navigate("/sign")}
-          className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
+          className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors duration-150 hover:bg-neutral-800"
         >
           Signa la Petició
         </button>

@@ -4,6 +4,7 @@
     "module": "ESNext",       
     "jsx": "react-jsx",              // Works with Vite
     "lib": ["DOM", "ESNext"],               // Include browser + modern features
+    "types": ["react", "react-dom"],
     "strict": true,                         // Enable strict TypeScript checks
     "moduleResolution": "Node",
     "esModuleInterop": true,                // Allows 'import express from "express"'

@@ -4,6 +4,7 @@ import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Particles from "./components/Particles";
+import TextType from "./components/TextType";
 
 function App() {
   const navigate = useNavigate();
@@ -15,37 +16,55 @@ function App() {
   return (
     <>
       <NavBar />
-
       {/* Hero Section */}
-      <main className="relative min-h-screen w-full overflow-hidden flex items-center justify-center text-center">
+      <main className="relative min-h-screen w-full overflow-hidden flex items-center justify-center text-center bg-black">
         {/* Particle background */}
         <div className="absolute inset-0">
           <Particles
-            particleColors={["#ffffff", "#ffffff"]}
-            particleCount={200}
+            particleColors={["#ff0000", "#ffee00", "#0004ff"]}
+            particleCount={300}
             particleSpread={10}
-            speed={0.1}
-            particleBaseSize={60}
+            speed={0.15}
+            particleBaseSize={300}
             moveParticlesOnHover={true}
             alphaParticles={false}
             disableRotation={false}
           />
         </div>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40" />
-
         {/* Content */}
-        <div className="relative z-10 max-w-2xl px-6">
-          <h1 className="text-4xl md:text-6xl font-vastago font-bold text-white">
-            Recollida de Signatures
+        <div className="relative z-10 max-w-4xl px-6">
+          <h1 className="relative text-4xl md:text-6xl font-vastago font-bold text-white leading-tight">
+            {/* Invisible sizer to lock height/width */}
+            <span className="invisible block">
+              ILP per una llei electoral justa.
+            </span>
+
+            {/* Overlayed typing effect */}
+            <span className="absolute inset-0 flex items-center justify-center">
+              <TextType
+                text={[
+                  "Recollida de Signatures.",
+                  "ILP per una llei electoral justa.",
+                  "Dona suport a Catalunya!",
+                ]}
+                typingSpeed={60}
+                pauseDuration={2500}
+                showCursor={true}
+                cursorCharacter="|"
+                className="whitespace-nowrap"
+              />
+            </span>
           </h1>
-          <p className="mt-4 text-lg md:text-xl text-gray-200">
+
+          <p className="mt-4 text-lg md:text-xl text-white font-bold">
             Dona suport a la ILP per una llei electoral justa a Catalunya.
           </p>
+
           <div className="mt-8">
             <Counter />
           </div>
+
           <button
             onClick={goToForm}
             className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
