@@ -183,6 +183,7 @@ const TextType: React.FC<TextTypeProps> = ({
     reverseMode,
     variableSpeed,
     onSentenceComplete,
+    getRandomSpeed,
   ]);
 
   const shouldHideCursor =
