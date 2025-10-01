@@ -33,7 +33,7 @@ export default function Counter({
           if (json.success) {
             //setCount(fakeCount)
             setCount(json.totalSignatures);
-            setError(null);
+            //setError(null);
           } else {
             setError("No s'ha pogut obtenir el comptador.");
           }
@@ -65,17 +65,17 @@ export default function Counter({
       <div className="relative">
         <ProgressBar value={count} goal={goal} />
 
-        {/* Numbers overlayed on top */}
+        {/* Numbers overlayed inside the bar */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-4xl md:text-5xl font-bold text-black flex items-baseline gap-2">
+          <p className="text-base md:text-lg font-semibold text-white flex items-baseline gap-1">
             <CountUp
               from={0}
               to={count}
               separator=","
               duration={1.5}
-              className="text-4xl md:text-5xl font-bold text-black"
+              className="text-base md:text-lg font-semibold text-white"
             />
-            <span className="text-4xl md:text-5xl font-bold text-black">
+            <span className="text-base md:text-lg font-semibold text-white">
               / {goal.toLocaleString()}
             </span>
           </p>
