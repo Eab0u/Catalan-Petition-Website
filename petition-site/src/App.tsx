@@ -67,8 +67,7 @@ function App() {
 
           <button
             onClick={goToForm}
-            className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-neutral-900 px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-neutral-800"
-          >
+            className="mt-8 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold text-white bg-white/10 border border-white/30 backdrop-blur-xl shadow-lgtransition-colors duration-300 hover:bg-white/20">
             Signa la Petició
           </button>
         </div>
@@ -77,6 +76,7 @@ function App() {
       {/* Info Section */}
       <section className="info-section py-12 px-6 text-center">
         <div className="max-w-3xl mx-auto space-y-4">
+        <div className="w-20 h-20 bg-debugpink"></div>
           <h2 className="text-2xl font-bold">Per què aquesta ILP?</h2>
           <p className="text-lg text-gray-700">
             Aquesta iniciativa busca establir una llei electoral més justa i

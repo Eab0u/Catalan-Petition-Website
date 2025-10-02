@@ -1,10 +1,10 @@
-// src/components/PetitionForm.tsx
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { petitionSchema, type PetitionSchemaType } from "../schemas/petitionSchema";
 import { useNavigate } from "react-router-dom";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { GradientText } from "./GradientText"
 
 /** helper: SHA-256 hex using Web Crypto API */
 async function sha256Hex(message: string) {
@@ -14,7 +14,6 @@ async function sha256Hex(message: string) {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Expected backend response
 interface ApiResponse {
   success: boolean;
   message?: string;
@@ -28,8 +27,8 @@ export default function PetitionForm() {
   const captchaRef = useRef<HCaptcha>(null);
 
   const API_BASE = import.meta.env.DEV
-  ? import.meta.env.VITE_API_BASE // use Cloud Run in dev
-  : ""; // in prod, use relative /api
+    ? import.meta.env.VITE_API_BASE
+    : "";
 
   const {
     register,
@@ -40,11 +39,9 @@ export default function PetitionForm() {
   });
 
   const onSubmit = async (data: PetitionSchemaType) => {
-    console.log("✅ onSubmit fired with data:", data, "captcha:", captchaToken);
     setErrorMessage(null);
 
     if (!captchaToken) {
-      console.warn("⚠️ Captcha missing, blocking submission");
       setErrorMessage("Si us plau, completa el captcha!");
       return;
     }
@@ -53,17 +50,6 @@ export default function PetitionForm() {
       const { nom, cognom1, cognom2, datanaixement, dni, address } = data;
       const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${dni}`;
       const signatureHash = await sha256Hex(canonical);
-
-      console.log("📡 Sending POST /api/sign with payload:", {
-        nom,
-        cognom1,
-        cognom2,
-        datanaixement,
-        dni,
-        address,
-        captchaToken,
-        signatureHash,
-      });
 
       const res = await fetch(`${API_BASE}/api/sign`, {
         method: "POST",
@@ -84,116 +70,186 @@ export default function PetitionForm() {
       try {
         json = (await res.json()) as ApiResponse;
       } catch {
-        throw new Error(`Invalid JSON response from server (status ${res.status})`);
+        throw new Error(`Invalid JSON response (status ${res.status})`);
       }
-
-      console.log("📥 Sign response:", res.status, json);
 
       if (!res.ok || !json.success) {
         throw new Error(json.message || `Sign error, status ${res.status}`);
       }
 
-      // success 🎉
-      console.log("✅ Petition submitted successfully!");
       setSubmitted(true);
       setTimeout(() => navigate("/"), 3000);
     } catch (err) {
       const error = err instanceof Error ? err.message : String(err);
-      console.error("❌ Error submitting petition:", error);
-      setErrorMessage(error || "S'ha produït un error en enviar la signatura. Torna-ho a provar.");
+      setErrorMessage(error || "S'ha produït un error en enviar la signatura.");
     }
   };
 
   if (submitted) {
     return (
-      <div className="text-center mt-10" aria-live="polite">
-        <h2>Gràcies per signar la petició!</h2>
-        <p>Redirigint a la pàgina principal...</p>
+      <div className="relative min-h-screen flex items-center justify-center bg-black text-white">
+        <div className="z-10 text-center space-y-4 bg-white/10 border border-white/30 backdrop-blur-xl shadow-lg p-8 rounded-2xl">
+          <h2 className="text-2xl font-bold">Gràcies per signar la petició!</h2>
+          <p className="text-lg">Redirigint a la pàgina principal...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        console.log("📝 Raw form submit triggered");
-        handleSubmit(onSubmit, (errors) => {
-          console.warn("❌ Validation failed:", JSON.stringify(errors, null, 2));
-        })(e);
-      }}
-      className="max-w-md mx-auto p-4 space-y-4"
-      noValidate
-    >
-      <div>
-        <label>Nom</label>
-        <input {...register("nom")} className="input" />
-        {errors.nom && <p className="text-red-600">{errors.nom.message}</p>}
-      </div>
+    <main className="relative min-h-screen flex items-center justify-center bg-black text-white px-4">
+      <div className="relative z-10 w-full max-w-lg p-6 rounded-2xl 
+                      bg-white/10 border border-white/30 backdrop-blur-xl shadow-lg">
+        
+        {/* ✨ GradientText Title with Catalan colors */}
+        <div className="flex justify-center">
+          <GradientText
+            text="Signa la Petició"
+            gradient="linear-gradient(90deg, #0004ff 0%, #ffcc00 30%, #ff0000 60%, #ffcc00 80%, #0004ff 100%)"
+            className="font-vastago text-3xl md:text-5xl font-bold tracking-tight"
+            neon
+          />
+        </div>
 
-      <div>
-        <label>Primer cognom</label>
-        <input {...register("cognom1")} className="input" />
-        {errors.cognom1 && <p className="text-red-600">{errors.cognom1.message}</p>}
-      </div>
 
-      <div>
-        <label>Segon cognom (opcional)</label>
-        <input {...register("cognom2")} className="input" />
-        {errors.cognom2 && <p className="text-red-600">{errors.cognom2.message}</p>}
-      </div>
-
-      <div>
-        <label>Data de naixement</label>
-        <input type="date" {...register("datanaixement")} className="input" />
-        {errors.datanaixement && <p className="text-red-600">{errors.datanaixement.message}</p>}
-      </div>
-
-      <div>
-        <label>DNI</label>
-        <input {...register("dni")} className="input" />
-        {errors.dni && <p className="text-red-600">{errors.dni.message}</p>}
-      </div>
-
-      <div>
-        <label>Adreça</label>
-        <input {...register("address")} className="input" />
-        {errors.address && <p className="text-red-600">{errors.address.message}</p>}
-      </div>
-
-      <div className="mt-2">
-        <label className="flex items-center gap-2">
-          <input type="checkbox" {...register("consent")} />
-          Accepto el tractament de dades per a aquesta ILP (vegeu la política de privacitat)
-        </label>
-        {errors.consent && <p className="text-red-600">{errors.consent.message}</p>}
-      </div>
-
-      <div>
-        <HCaptcha
-          ref={captchaRef}
-          sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
-          onVerify={(token) => {
-            console.log("✅ Captcha verified:", token);
-            setCaptchaToken(token);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(onSubmit)(e);
           }}
-          onExpire={() => {
-            console.warn("⚠️ Captcha expired");
-            setCaptchaToken(null);
-          }}
-          languageOverride="ca"
-        />
+          className="space-y-4"
+          noValidate
+        >
+          {/* Nom */}
+          <div>
+            <label className="block mb-1 font-semibold">Nom</label>
+            <input
+              {...register("nom")}
+              className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.nom && <p className="text-red-400 mt-1">{errors.nom.message}</p>}
+          </div>
+
+          {/* Cognoms */}
+          <div>
+            <label className="block mb-1 font-semibold">Primer cognom</label>
+            <input
+              {...register("cognom1")}
+              className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.cognom1 && <p className="text-red-400 mt-1">{errors.cognom1.message}</p>}
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">Segon cognom (opcional)</label>
+            <input
+              {...register("cognom2")}
+              className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.cognom2 && <p className="text-red-400 mt-1">{errors.cognom2.message}</p>}
+          </div>
+
+          {/* Data */}
+          <div>
+            <label className="block mb-1 font-semibold">Data de naixement</label>
+            <input
+              type="date"
+              {...register("datanaixement")}
+              className="w-full px-3 py-2 rounded-lg 
+                        bg-black/30 border border-white/20 
+                        text-white placeholder-gray-400
+                        font-vastago tracking-tight
+                        focus:outline-none focus:ring-2 focus:ring-blue-400
+                        [&::-webkit-calendar-picker-indicator]:invert
+                        [&::-webkit-calendar-picker-indicator]:opacity-70
+                        [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
+            />
+            {errors.datanaixement && <p className="text-red-400 mt-1">{errors.datanaixement.message}</p>}
+          </div>
+
+          {/* DNI */}
+          <div>
+            <label className="block mb-1 font-semibold">DNI</label>
+            <input
+              {...register("dni")}
+              className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.dni && <p className="text-red-400 mt-1">{errors.dni.message}</p>}
+          </div>
+
+          {/* Adreça */}
+          <div>
+            <label className="block mb-1 font-semibold">Adreça</label>
+            <input
+              {...register("address")}
+              className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
+                         focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.address && <p className="text-red-400 mt-1">{errors.address.message}</p>}
+          </div>
+
+          {/* Consent */}
+          <div className="mt-4">
+            <label
+              className="flex items-center gap-3 p-3 rounded-lg bg-black/30 border border-white/20 
+                        backdrop-blur-md cursor-pointer hover:bg-black/40 transition"
+            >
+              <input
+                type="checkbox"
+                {...register("consent")}
+                className="h-5 w-5 rounded-md border border-white/30 bg-black/50 
+                          checked:bg-black checked:hover:bg-black cursor-pointer"
+              />
+              <span className="text-base font-semibold text-white leading-snug">
+                Accepto el tractament de dades per a aquesta ILP <br />
+                <span className="font-normal text-sm text-gray-300">(vegeu la política de privacitat)</span>
+              </span>
+            </label>
+            {errors.consent && (
+              <p className="text-red-400 text-sm mt-2">{errors.consent.message}</p>
+            )}
+          </div>
+
+          {/* Captcha */}
+          <div className="flex justify-center mt-6">
+            <HCaptcha
+              ref={captchaRef}
+              sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+              languageOverride="ca"
+            />
+          </div>
+
+          {errorMessage && <p className="text-red-400">{errorMessage}</p>}
+
+          {/* Submit button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-4 cursor-pointer rounded-2xl px-6 py-3 text-base font-semibold 
+                      text-white relative border border-white/30
+                      bg-black/40 border border-transparent
+                      before:absolute before:inset-0 before:rounded-2xl 
+                      before:p-[2px] before:bg-gradient-to-r before:from-blue-500 before:via-red-500 before:to-yellow-500 
+                      before:opacity-0 before:transition-opacity before:duration-300
+                      hover:before:opacity-100 
+                      hover:scale-105
+                      transition duration-300 ease-in-out
+                      disabled:opacity-50
+                      backdrop-blur-xl shadow-lg overflow-hidden"
+          >
+            <span className="relative z-10">
+              {isSubmitting ? "Enviant..." : "Enviar"}
+            </span>
+          </button>
+        </form>
       </div>
-
-      {errorMessage && <p className="text-red-600">{errorMessage}</p>}
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-4 px-6 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
-      >
-        {isSubmitting ? "Enviant..." : "Enviar"}
-      </button>
-    </form>
+    </main>
   );
 }
+

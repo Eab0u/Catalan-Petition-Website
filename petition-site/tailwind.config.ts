@@ -1,13 +1,15 @@
-import type { Config } from "tailwindcss";
-
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      fontFamily: {
-        vastago: ['"Vastago Grotesk"', 'sans-serif'],
+      keyframes: {
+        gradient: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+      },
+      animation: {
+        gradient: "gradient 8s ease infinite",
       },
     },
   },
-  plugins: [],
-} satisfies Config;
+}
