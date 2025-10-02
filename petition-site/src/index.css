@@ -1,5 +1,9 @@
 ﻿@import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* === Vastago Grotesk Font Faces === */
 @font-face {
   font-family: "Vastago Grotesk";

@@ -26,12 +26,13 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   const [navItems, setNavItems] = useState<NavItemConfig[]>([
-    { text: "Info", onClick: () => alert("Navigate to Info") },
-    { text: "About", onClick: () => alert("Navigate to About") },
-    { text: "Security", onClick: () => alert("Navigate to Security") },
-    { text: "FAQ", onClick: () => alert("Navigate to FAQ") },
-    { text: "Contact", onClick: () => alert("Navigate to Contact") },
+    {text: "Informació",onClick: () => document.getElementById("info")?.scrollIntoView(),},
+    {text: "Sobre nosaltres", onClick: () => document.getElementById("about")?.scrollIntoView()},
+    {text: "Seguretat", onClick: () => document.getElementById("security")?.scrollIntoView()},
+    {text: "Preguntes freqüents", onClick: () => document.getElementById("FAQ")?.scrollIntoView()},
+    {text: "Contacte", onClick: () => alert("Navegar a Contacte") },
   ]);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -64,17 +65,14 @@ export default function NavBar() {
   }, []);
 
   return (
-    <header className="fixed left-1/2 top-6 z-50 w-full max-w-5xl -translate-x-1/2 px-4">
+    <header className="fixed left-1/2 top-6 z-50 w-full max-w-7xl -translate-x-1/2 px-4">
       <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/30 bg-white/10 px-6 py-4 shadow-lg backdrop-blur-xl sm:flex-nowrap sm:gap-6 sm:px-10">
         {/* Logo */}
         <div className="flex shrink-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
-            <img
-              loading="lazy"
-              src="/GDClogo.png"
-              alt="Generalitat de Catalunya logo"
-              className="h-6 w-6 object-contain"
-            />
+            <a href="#top">
+              <img loading="lazy" src="/GDClogo.png" alt="Generalitat de Catalunya logo" className="h-6 w-6 object-contain cursor-pointer"/>
+            </a>
           </div>
           <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-100">
             Generalitat De Catalunya
