@@ -4,15 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { petitionSchema, type PetitionSchemaType } from "../schemas/petitionSchema";
 import { useNavigate } from "react-router-dom";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { GradientText } from "./GradientText"
-
-/** helper: SHA-256 hex using Web Crypto API */
-async function sha256Hex(message: string) {
-  const msgUint8 = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+import { GradientText } from "./GradientText";
 
 interface ApiResponse {
   success: boolean;
@@ -26,9 +18,10 @@ export default function PetitionForm() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const captchaRef = useRef<HCaptcha>(null);
 
+  // ✅ Use your deployed API base in production
   const API_BASE = import.meta.env.DEV
     ? import.meta.env.VITE_API_BASE
-    : "";
+    : "https://api-6n6hw37u3a-ew.a.run.app";
 
   const {
     register,
@@ -47,23 +40,24 @@ export default function PetitionForm() {
     }
 
     try {
-      const { nom, cognom1, cognom2, datanaixement, dni, address } = data;
-      const canonical = `${nom}|${cognom1}|${cognom2 ?? ""}|${datanaixement}|${dni}`;
-      const signatureHash = await sha256Hex(canonical);
+      // ✅ Convert fields to backend format
+      const datanaixement = data.datanaixement.replaceAll("-", ""); // YYYYMMDD
+      const tipusid = data.dni?.toUpperCase(); // rename and uppercase
+
+      const payload = {
+        nom: data.nom,
+        cognom1: data.cognom1,
+        cognom2: data.cognom2 || "",
+        datanaixement,
+        tipusid,
+        address: data.address || "",
+        captchaToken,
+      };
 
       const res = await fetch(`${API_BASE}/api/sign`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nom,
-          cognom1,
-          cognom2,
-          datanaixement,
-          dni,
-          address,
-          captchaToken,
-          signatureHash,
-        }),
+        body: JSON.stringify(payload),
       });
 
       let json: ApiResponse;
@@ -98,10 +92,10 @@ export default function PetitionForm() {
 
   return (
     <main className="relative min-h-screen flex items-center justify-center bg-black text-white px-4">
-      <div className="relative z-10 w-full max-w-lg p-6 rounded-2xl 
-                      bg-white/10 border border-white/30 backdrop-blur-xl shadow-lg">
-        
-        {/* ✨ GradientText Title with Catalan colors */}
+      <div
+        className="relative z-10 w-full max-w-lg p-6 rounded-2xl 
+                    bg-white/10 border border-white/30 backdrop-blur-xl shadow-lg"
+      >
         <div className="flex justify-center">
           <GradientText
             text="Signa la Petició"
@@ -110,7 +104,6 @@ export default function PetitionForm() {
             neon
           />
         </div>
-
 
         <form
           onSubmit={(e) => {
@@ -172,7 +165,7 @@ export default function PetitionForm() {
 
           {/* DNI */}
           <div>
-            <label className="block mb-1 font-semibold">DNI</label>
+            <label className="block mb-1 font-semibold">DNI / NIE</label>
             <input
               {...register("dni")}
               className="w-full px-3 py-2 rounded-lg bg-black/30 border border-white/20 
@@ -206,12 +199,12 @@ export default function PetitionForm() {
               />
               <span className="text-base font-semibold text-white leading-snug">
                 Accepto el tractament de dades per a aquesta ILP <br />
-                <span className="font-normal text-sm text-gray-300">(vegeu la política de privacitat)</span>
+                <span className="font-normal text-sm text-gray-300">
+                  (vegeu la política de privacitat)
+                </span>
               </span>
             </label>
-            {errors.consent && (
-              <p className="text-red-400 text-sm mt-2">{errors.consent.message}</p>
-            )}
+            {errors.consent && <p className="text-red-400 text-sm mt-2">{errors.consent.message}</p>}
           </div>
 
           {/* Captcha */}
@@ -252,4 +245,3 @@ export default function PetitionForm() {
     </main>
   );
 }
-

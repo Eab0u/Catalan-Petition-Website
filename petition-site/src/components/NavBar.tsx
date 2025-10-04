@@ -15,7 +15,7 @@ function NavItem({ text, onClick }: NavItemConfig) {
     <button
       type="button"
       onClick={onClick}
-      className="cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-sm font-medium tracking-wide text-white transition-colors duration-150 hover:text-neutral-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      className="cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-2xl font-medium tracking-wide text-white transition-colors duration-150 hover:text-neutral-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
     >
       {text}
     </button>
@@ -69,14 +69,11 @@ export default function NavBar() {
       <div className="flex w-full flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/30 bg-white/10 px-6 py-4 shadow-lg backdrop-blur-xl sm:flex-nowrap sm:gap-6 sm:px-10">
         {/* Logo */}
         <div className="flex shrink-0 items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
+          <div className="flex h-15 w-15 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
             <a href="#top">
-              <img loading="lazy" src="/GDClogo.png" alt="Generalitat de Catalunya logo" className="h-6 w-6 object-contain cursor-pointer"/>
+              <img loading="lazy" src="/LLEI Logo.png" alt="LLEI Logo" className="h-15 w-15 object-contain cursor-pointer"/>
             </a>
           </div>
-          <span className="font-vastago text-lg font-extrabold uppercase tracking-[0.25em] text-neutral-100">
-            Generalitat De Catalunya
-          </span>
         </div>
 
         {/* Nav items */}
