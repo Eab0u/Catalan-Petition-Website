@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 interface NavItemConfig {
   text: string;
@@ -86,11 +87,16 @@ export default function NavBar() {
         {/* CTA button */}
         <button
           type="button"
-          onClick={() => navigate("/sign")}
-          className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors duration-150 hover:bg-neutral-800"
+          //Reactivate when working onClick={() => navigate("/sign")}
+          onClick={() => navigate("/under-construction")}
+          className="cursor-pointer shrink-0 whitespace-nowrap rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black transition-colors duration-150 hover:bg-neutral-800 hover:text-white"
         >
           Signa la Petició
         </button>
+
+        <div className="cursor-pointer">
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );

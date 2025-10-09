@@ -1,10 +1,12 @@
-import crypto from 'crypto';
-
 /**
- * Hash a string using SHA-256
+ * Hash a string using SHA-256 (browser-compatible)
  * @param input - The string to hash
- * @returns Hexadecimal hash
+ * @returns Promise that resolves to the hexadecimal hash
  */
-export function hash(input: string): string {
-  return crypto.createHash('sha256').update(input).digest('hex');
+export async function hash(input: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }

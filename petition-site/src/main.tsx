@@ -4,14 +4,19 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PetitionForm from "./components/PetitionForm";
+import UnderConstruction from "./pages/UnderConstruction";
+import { ThemeProvider } from "./theme";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/sign" element={<PetitionForm />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/sign" element={<PetitionForm />} />
+          <Route path="/under-construction" element={<UnderConstruction />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );
