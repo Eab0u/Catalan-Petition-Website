@@ -8,6 +8,7 @@ import TextType from "./components/TextType";
 import AnimatedContent from "./components/AnimatedContent";
 import Carousel from "./components/Carousel";
 import Faqs from "./components/FAQs";
+import ProfileCard from './components/ProfileCard'
 
 function App() {
   const navigate = useNavigate();
@@ -102,17 +103,28 @@ function App() {
           dark:bg-black dark:text-white
         "
       >
-        <div className="mx-auto max-w-8xl px-20 ml-20 grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start">
+        <div
+          className="
+            mx-auto max-w-8xl 
+            px-6 sm:px-10 md:px-20 md:ml-20 
+            grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start
+          "
+        >
           {/* Left side: text + 3 cards */}
-          <div className="space-y-8 text-center md:text-center">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-wide">Per què aquesta ILP?</h2>
+          <div className="space-y-8 text-center mx-auto md:text-left md:mx-0">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-wide">
+              Per què aquesta ILP?
+            </h2>
 
             <AnimatedContent distance={80} direction="vertical" duration={1} delay={0.1}>
               <p className="text-lg md:text-xl leading-relaxed text-neutral-600 dark:text-gray-300">
                 El nostre sistema electoral actual a Catalunya és{" "}
-                <span className="font-semibold text-neutral-900 dark:text-white">desigual i poc representatiu</span>.
-                Aquesta Iniciativa Legislativa Popular vol posar fi a les distorsions i garantir
-                que la veu de tots els ciutadans compti de veritat.
+                <span className="font-semibold text-neutral-900 dark:text-white">
+                  desigual i poc representatiu
+                </span>
+                . Aquesta Iniciativa Legislativa Popular vol posar fi a les
+                distorsions i garantir que la veu de tots els ciutadans compti de
+                veritat.
               </p>
             </AnimatedContent>
 
@@ -127,8 +139,8 @@ function App() {
                 >
                   <h3 className="text-xl font-semibold mb-3">Igualtat del vot</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Cada vot ha de tenir el mateix pes, visquis on visquis. L’ILP busca equilibrar la
-                    representació al Parlament.
+                    Cada vot ha de tenir el mateix pes, visquis on visquis. L’ILP
+                    busca equilibrar la representació al Parlament.
                   </p>
                 </div>
               </AnimatedContent>
@@ -143,8 +155,8 @@ function App() {
                 >
                   <h3 className="text-xl font-semibold mb-3">Més transparència</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Un sistema clar i just reforça la confiança de la ciutadania i la qualitat democràtica del nostre
-                    país.
+                    Un sistema clar i just reforça la confiança de la ciutadania i la
+                    qualitat democràtica del nostre país.
                   </p>
                 </div>
               </AnimatedContent>
@@ -159,7 +171,8 @@ function App() {
                 >
                   <h3 className="text-xl font-semibold mb-3">Representació real</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Tots els ciutadans mereixen que la seva veu sigui escoltada i reflectida a les institucions.
+                    Tots els ciutadans mereixen que la seva veu sigui escoltada i
+                    reflectida a les institucions.
                   </p>
                 </div>
               </AnimatedContent>
@@ -169,7 +182,14 @@ function App() {
           {/* Right side: video */}
           <div className="flex items-center justify-center py-15">
             <div className="aspect-video w-full max-w-xl rounded-2xl overflow-hidden border shadow-lg border-neutral-200 dark:border-white/20">
-              <video className="w-full h-full object-cover" autoPlay loop muted playsInline controls>
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+              >
                 <source src="/GDCvideo1.mp4" type="video/mp4" />
                 El teu navegador no suporta el vídeo.
               </video>
@@ -188,7 +208,7 @@ function App() {
         "
       >
         <div className="mx-auto max-w-6xl px-6 space-y-16">
-          <h2 className="md:text-5xl font-bold tracking-wide text-center">Sobre nosaltres</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide text-center">Sobre nosaltres</h2>
 
         <div className="relative border-l pl-8 space-y-12 border-neutral-200 dark:border-white/20">
             <AnimatedContent distance={60} direction="horizontal" reverse duration={1}>
@@ -227,10 +247,18 @@ function App() {
             <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
               <div className="relative">
                 <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2">Compromís democràtic</h3>
+                <h3 className="text-xl font-semibold mb-2">Antecedents a la ILP</h3>
                 <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
-                  Creiem en la participació ciutadana com a eina de transformació. Aquesta ILP és una oportunitat per
-                  demostrar que la societat civil pot impulsar canvis legislatius reals i necessaris.
+                  Consulta la informació completa sobre els antecedents i el context de la ILP al nostre lloc web oficial.
+                  <br />
+                  <a
+                    href="http://www.ilp-lleielectoral.cat/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  >
+                    www.ilp-lleielectoral.cat
+                  </a>
                 </p>
               </div>
             </AnimatedContent>
@@ -323,16 +351,50 @@ function App() {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ & Contact Section */}
       <section
         id="FAQ"
         className="
+          relative scroll-mt-40
           bg-white text-neutral-900
           dark:bg-black dark:text-white
         "
       >
-        <Faqs />
+        <div
+          className="
+            mx-auto max-w-8xl px-6 sm:px-10 md:px-20
+            grid grid-cols-1 gap-12 md:grid-cols-2
+            items-center
+          "
+          style={{ minHeight: "80vh" }}
+        >
+          {/* Left side: FAQ */}
+          <div className="flex flex-col justify-center items-center md:items-start md:pl-10 lg:pl-20">
+            <div className="w-full max-w-3xl">
+              <Faqs />
+            </div>
+          </div>
+
+          {/* Right side: Contact card */}
+          <div className="flex justify-center md:justify-center items-center mb-10 sm:mb-0">
+            <ProfileCard
+              avatarUrl="/RahulPic.png"
+              miniAvatarUrl="/hq720.png"
+              iconUrl="/iconpattern.png"
+              grainUrl="/grain.png"
+              name="Rahul M-I"
+              title="Big Fella"
+              handle="Eab0u"
+              status="Online"
+              contactText="Contact"
+              onContactClick={() =>
+                alert("Lloc web properament! \nEmail: rahulm7411@gmail.com")
+              }
+            />
+          </div>
+        </div>
       </section>
+
     </>
   );
 }

@@ -12,7 +12,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "noImplicitAny": true,
-    "outDir": "dist"                        // Compiled output (optional)
+    "outDir": "dist",                        // Compiled output (optional)
   },
   "include": [
     "src",                                  // Frontend

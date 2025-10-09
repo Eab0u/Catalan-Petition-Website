@@ -50,8 +50,22 @@ export default function Carousel({
   loop = false,
   round = false,
 }) {
+  //Dynamic Resizing for smaller screens
+  const [responsiveWidth, setResponsiveWidth] = useState(baseWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      // scales width to ~85% of viewport, but never smaller than 240px or larger than 400px
+      const newWidth = Math.min(Math.max(screenWidth * 0.85, 240), 500);
+      setResponsiveWidth(newWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [baseWidth]);
+
   const containerPadding = 16;
-  const itemWidth = baseWidth - containerPadding * 2;
+  const itemWidth = responsiveWidth - containerPadding * 2;
   const trackItemOffset = itemWidth + GAP;
 
   const carouselItems = loop ? [...items, items[0]] : items;
@@ -137,8 +151,8 @@ export default function Carousel({
         transition-colors duration-300
       `}
       style={{
-        width: `${baseWidth}px`,
-        ...(round && { height: `${baseWidth}px` }),
+        width: `${responsiveWidth}px`,
+        ...(round && { height: `${responsiveWidth}px` }),
       }}
     >
       <motion.div

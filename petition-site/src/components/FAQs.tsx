@@ -90,7 +90,7 @@ export default function Faqs() {
     <section
       id="faq"
       className="
-        relative py-20 scroll-mt-20
+        relative py-10 scroll-mt-20
         bg-white text-neutral-900
         dark:bg-black dark:text-white
         transition-none

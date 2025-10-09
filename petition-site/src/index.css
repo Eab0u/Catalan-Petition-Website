@@ -1,9 +1,12 @@
 ﻿@import "tailwindcss";
 
+/* stylelint-disable-next-line unknownAtRules */
 @custom-variant dark (&:where(.dark, .dark *));
 
-html {
+html,body {
   scroll-behavior: smooth;
+  overflow-x:hidden;
+  width:100%;
 }
 
 /* === Vastago Grotesk Font Faces === */
