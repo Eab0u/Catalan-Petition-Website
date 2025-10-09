@@ -77,7 +77,7 @@ const TextType: React.FC<TextTypeProps> = ({
   }, [variableSpeed, typingSpeed]);
 
   const getCurrentTextColor = (): string => {
-    if (textColors.length === 0) return '#ffffff';
+    if (textColors.length === 0) return '#000000 dark: #ffffff';
     return textColors[currentTextIndex % textColors.length];
   };
 

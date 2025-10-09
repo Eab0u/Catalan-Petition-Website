@@ -73,18 +73,16 @@ function App() {
           </p>
 
           <div className="mt-8">
-            <Counter />
+            <Counter/>
           </div>
 
           <button
             onClick={goToForm}
             className="
-              mt-8 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold
-              border backdrop-blur-xl shadow-lg transition-colors duration-300
-              /* Light mode button */
-              bg-neutral-900 text-white border-neutral-900 hover:bg-neutral-800
-              /* Dark mode override */
-              dark:bg-white/10 dark:text-white dark:border-white/30 dark:hover:bg-white/20
+              mt-10 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold 
+              text-black dark:text-white border border-black/60 dark:border-white/30
+              bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
+              transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
             "
           >
             Signa la Petició
@@ -206,7 +204,7 @@ function App() {
 
             <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.2}>
               <div className="relative">
-                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-white dark:bg-white shadow-lg" />
+                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-black dark:bg-white shadow-lg" />
                 <h3 className="text-xl font-semibold mb-2">Objectiu comú</h3>
                 <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
                   El nostre objectiu és establir una llei electoral més justa i representativa per a Catalunya, on

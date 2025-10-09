@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, useMotionValue, useTransform } from 'motion/react';
 import type { PanInfo, Transition } from "framer-motion";
-
-// replace icons with your own if needed
 import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from 'react-icons/fi';
 
 const DEFAULT_ITEMS = [
@@ -10,32 +8,32 @@ const DEFAULT_ITEMS = [
     title: 'Text Animations',
     description: 'Cool text animations for your projects.',
     id: 1,
-    icon: <FiFileText className="h-[16px] w-[16px] text-white" />
+    icon: <FiFileText className="h-[16px] w-[16px] text-white" />,
   },
   {
     title: 'Animations',
     description: 'Smooth animations for your projects.',
     id: 2,
-    icon: <FiCircle className="h-[16px] w-[16px] text-white" />
+    icon: <FiCircle className="h-[16px] w-[16px] text-white" />,
   },
   {
     title: 'Components',
     description: 'Reusable components for your projects.',
     id: 3,
-    icon: <FiLayers className="h-[16px] w-[16px] text-white" />
+    icon: <FiLayers className="h-[16px] w-[16px] text-white" />,
   },
   {
     title: 'Backgrounds',
     description: 'Beautiful backgrounds and patterns for your projects.',
     id: 4,
-    icon: <FiLayout className="h-[16px] w-[16px] text-white" />
+    icon: <FiLayout className="h-[16px] w-[16px] text-white" />,
   },
   {
     title: 'Common UI',
     description: 'Common UI components are coming soon!',
     id: 5,
-    icon: <FiCode className="h-[16px] w-[16px] text-white" />
-  }
+    icon: <FiCode className="h-[16px] w-[16px] text-white" />,
+  },
 ];
 
 const DRAG_BUFFER = 0;
@@ -50,7 +48,7 @@ export default function Carousel({
   autoplayDelay = 3000,
   pauseOnHover = false,
   loop = false,
-  round = false
+  round = false,
 }) {
   const containerPadding = 16;
   const itemWidth = baseWidth - containerPadding * 2;
@@ -80,13 +78,9 @@ export default function Carousel({
   useEffect(() => {
     if (autoplay && (!pauseOnHover || !isHovered)) {
       const timer = setInterval(() => {
-        setCurrentIndex(prev => {
-          if (prev === items.length - 1 && loop) {
-            return prev + 1;
-          }
-          if (prev === carouselItems.length - 1) {
-            return loop ? 0 : prev;
-          }
+        setCurrentIndex((prev) => {
+          if (prev === items.length - 1 && loop) return prev + 1;
+          if (prev === carouselItems.length - 1) return loop ? 0 : prev;
           return prev + 1;
         });
       }, autoplayDelay);
@@ -109,16 +103,16 @@ export default function Carousel({
     const offset = info.offset.x;
     const velocity = info.velocity.x;
     if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
-         if (loop && currentIndex === items.length - 1) {
+      if (loop && currentIndex === items.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        setCurrentIndex(prev => Math.min(prev + 1, carouselItems.length - 1));
+        setCurrentIndex((prev) => Math.min(prev + 1, carouselItems.length - 1));
       }
     } else if (offset > DRAG_BUFFER || velocity > VELOCITY_THRESHOLD) {
-       if (loop && currentIndex === 0) {
+      if (loop && currentIndex === 0) {
         setCurrentIndex(items.length - 1);
       } else {
-        setCurrentIndex(prev => Math.max(prev - 1, 0));
+        setCurrentIndex((prev) => Math.max(prev - 1, 0));
       }
     }
   };
@@ -128,19 +122,23 @@ export default function Carousel({
     : {
         dragConstraints: {
           left: -trackItemOffset * (carouselItems.length - 1),
-          right: 0
-        }
+          right: 0,
+        },
       };
 
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden p-4 ${
-        round ? 'rounded-full border border-white' : 'rounded-[24px] border border-[#222]'
-      }`}
+      className={`
+        relative overflow-hidden p-4 rounded-[24px]
+        border border-black/60 bg-transparent
+        dark:border-white/20 dark:bg-transparent
+        backdrop-blur-md shadow-lg
+        transition-colors duration-300
+      `}
       style={{
         width: `${baseWidth}px`,
-        ...(round && { height: `${baseWidth}px` })
+        ...(round && { height: `${baseWidth}px` }),
       }}
     >
       <motion.div
@@ -152,7 +150,7 @@ export default function Carousel({
           gap: `${GAP}px`,
           perspective: 1000,
           perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2}px 50%`,
-          x
+          x,
         }}
         onDragEnd={handleDragEnd}
         animate={{ x: -(currentIndex * trackItemOffset) }}
@@ -167,48 +165,51 @@ export default function Carousel({
           return (
             <motion.div
               key={index}
-              className={`relative shrink-0 flex flex-col ${
-                round
-                  ? 'items-center justify-center text-center bg-[#060010] border-0'
-                  : 'items-start justify-between rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md shadow-lg'
-              } overflow-hidden cursor-grab active:cursor-grabbing`}
+              className={`
+                relative shrink-0 flex flex-col items-start justify-between rounded-2xl overflow-hidden
+                bg-white/70 border border-black/40 backdrop-blur-md
+                dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md
+                shadow-lg transition-colors duration-300
+                cursor-grab active:cursor-grabbing
+              `}
               style={{
                 width: itemWidth,
                 height: round ? itemWidth : '100%',
-                rotateY: rotateY,
-                ...(round && { borderRadius: '50%' })
+                rotateY,
+                ...(round && { borderRadius: '50%' }),
               }}
               transition={effectiveTransition}
             >
-              <div className={`${round ? 'p-0 m-0' : 'mb-4 p-5'}`}>
-                <span className="flex h-[75px] w-[75px] items-center justify-center rounded-full bg-[#060010]">
+              <div className="p-6 flex flex-col items-start justify-between">
+                <span className="flex h-[75px] w-[75px] items-center justify-center rounded-full bg-black/40 dark:bg-[#060010] mb-4">
                   {item.icon}
                 </span>
-              </div>
-              <div className="p-6">
-                <div className="mb-3 font-bold text-2xl text-white tracking-wide">{item.title}</div>
-                <p className="text-lg text-gray-300 leading-relaxed">{item.description}</p>
+                <div className="font-bold text-2xl text-black dark:text-white tracking-wide mb-2">
+                  {item.title}
+                </div>
+                <p className="text-lg text-neutral-800 dark:text-gray-300 leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             </motion.div>
           );
         })}
       </motion.div>
+
+      {/* Dots */}
       <div className={`flex w-full justify-center ${round ? 'absolute z-20 bottom-12 left-1/2 -translate-x-1/2' : ''}`}>
         <div className="mt-4 flex w-[150px] justify-between px-8">
           {items.map((_, index) => (
             <motion.div
               key={index}
-              className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-150 ${
-                currentIndex % items.length === index
-                  ? round
-                    ? 'bg-white'
-                    : 'bg-[#333333]'
-                  : round
-                    ? 'bg-[#555]'
-                    : 'bg-[rgba(51,51,51,0.4)]'
-              }`}
+              className={`
+                h-2 w-2 rounded-full cursor-pointer transition-colors duration-150
+                ${currentIndex % items.length === index
+                  ? 'bg-black dark:bg-white'
+                  : 'bg-black/30 dark:bg-white/30'}
+              `}
               animate={{
-                scale: currentIndex % items.length === index ? 1.2 : 1
+                scale: currentIndex % items.length === index ? 1.2 : 1,
               }}
               onClick={() => setCurrentIndex(index)}
               transition={{ duration: 0.15 }}

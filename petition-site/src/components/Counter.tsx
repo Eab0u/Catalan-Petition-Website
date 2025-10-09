@@ -56,7 +56,7 @@ export default function Counter({
   return (
     <div className="w-full max-w-3xl mx-auto">
       {error && (
-        <p className="mb-2 rounded bg-red-600 px-3 py-2 text-sm font-semibold text-white">
+        <p className="mb-2 rounded bg-red-600 px-3 py-2 text-sm font-semibold text-black dark:text-white">
           {error}
         </p>
       )}
@@ -67,15 +67,15 @@ export default function Counter({
 
         {/* Numbers overlayed inside the bar */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-base md:text-lg font-semibold text-white flex items-baseline gap-1">
+          <p className="text-base md:text-lg font-semibold text-black dark:text-white flex items-baseline gap-1">
             <CountUp
               from={0}
               to={count}
               separator=","
               duration={1.5}
-              className="text-base md:text-lg font-semibold text-white"
+              className="text-base md:text-lg font-semibold text-black dark:text-white"
             />
-            <span className="text-base md:text-lg font-semibold text-white">
+            <span className="text-base md:text-lg font-semibold text-black dark:text-white">
               / {goal.toLocaleString()}
             </span>
           </p>
