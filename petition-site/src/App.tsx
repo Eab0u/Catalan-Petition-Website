@@ -1,5 +1,4 @@
-﻿import React from "react";
-import "./index.css";
+﻿import "./index.css";
 import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
@@ -9,6 +8,7 @@ import AnimatedContent from "./components/AnimatedContent";
 import Carousel from "./components/Carousel";
 import Faqs from "./components/FAQs";
 import ProfileCard from './components/ProfileCard'
+import RotatingQA from "./components/RotatingQA";
 
 function App() {
   const navigate = useNavigate();
@@ -17,6 +17,29 @@ function App() {
     // navigate("/sign"); // This is for when it is up and running
     navigate("/under-construction");
   };
+
+  const rotatingTexts = [
+    {
+      q: "Quin és el nostre proper objectiu?",
+      a: "Difondre i donar a conèixer el projecte de país que representa la ILP Llei Electoral Catalana. És un projecte per a tothom i necessita una implicació àmplia.",
+    },
+    {
+      q: "Com ho volem fer?",
+      a: "Aquesta serà la primera ILP que planteja la recollida electrònica de signatures, utilitzant identitats digitals com l'idCAT Mòbil.",
+    },
+    {
+      q: "Ens hi heu d’ajudar tots!",
+      a: "Necessitarem voluntaris que expliquin el projecte, ajudin a difondre’l i contribueixin a fer-lo arribar arreu del país.",
+    },
+    {
+      q: "Com pots ajudar?",
+      a: "Pots signar la ILP, oferir-te com a voluntari, organitzar actes al teu municipi o difondre’ns a les xarxes. Tot suport és valuós.",
+    },
+    {
+      q: "Què és el que voldríem?",
+      a: "Que els representants de la sobirania catalana trobin el consens per aprovar la llei i avançar cap a un sistema electoral més just.",
+    },
+  ];
 
   return (
     <>
@@ -27,13 +50,13 @@ function App() {
         id="top"
         className="
           scroll-smooth relative min-h-screen w-full overflow-hidden
-          flex items-center justify-center text-center
+          flex flex-col items-center justify-center text-center
           bg-white text-neutral-900
           dark:bg-black dark:text-white
         "
       >
         {/* Particle background */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-0">
           <Particles
             particleColors={["#ff0000", "#ffee00", "#0004ff"]}
             particleCount={300}
@@ -46,13 +69,12 @@ function App() {
           />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 max-w-4xl px-6">
-          <h1 className="relative text-4xl md:text-6xl font-vastago font-bold leading-tight">
-            {/* Invisible sizer to lock height/width */}
-            <span className="invisible block">ILP per una llei electoral justa.</span>
+        {/* Content + rotating text now share the same stable z-layer */}
+        <div className="relative z-10 max-w-4xl px-6 flex flex-col items-center mt-30">
 
-            {/* Overlayed typing effect */}
+          {/* Hero Title */}
+          <h1 className="relative text-4xl md:text-6xl font-vastago font-bold leading-tight">
+            <span className="invisible block">ILP per una llei electoral justa.</span>
             <span className="absolute inset-0 flex items-center justify-center">
               <TextType
                 text={[
@@ -73,14 +95,14 @@ function App() {
             Dona suport a la ILP per una llei electoral justa a Catalunya.
           </p>
 
-          <div className="mt-8">
-            <Counter/>
+          <div className="mt-8 w-full flex justify-center">
+            <Counter />
           </div>
 
           <button
             onClick={goToForm}
             className="
-              mt-10 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold 
+              mt-10 mb-10 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold 
               text-black dark:text-white border border-black/60 dark:border-white/30
               bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
               transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
@@ -88,11 +110,14 @@ function App() {
           >
             Signa la Petició
           </button>
+
+          <RotatingQA items={rotatingTexts} interval={5000} fadeDuration={500} />
         </div>
 
-        {/* Bottom fade to background */}
+        {/* Bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white dark:to-black z-20" />
       </main>
+
 
       {/* Info Section */}
       <section
@@ -118,13 +143,18 @@ function App() {
 
             <AnimatedContent distance={80} direction="vertical" duration={1} delay={0.1}>
               <p className="text-lg md:text-xl leading-relaxed text-neutral-600 dark:text-gray-300">
-                El nostre sistema electoral actual a Catalunya és{" "}
+                Aquesta iniciativa neix després de dècades d’intents per dotar Catalunya 
+                d’una{" "}
                 <span className="font-semibold text-neutral-900 dark:text-white">
-                  desigual i poc representatiu
+                llei electoral pròpia
                 </span>
-                . Aquesta Iniciativa Legislativa Popular vol posar fi a les
-                distorsions i garantir que la veu de tots els ciutadans compti de
-                veritat.
+                . Les dificultats de vot, especialment per a la 
+                Catalunya exterior, i la manca d’un model adaptat al país han fet evident{" "}
+                <span className="font-semibold text-neutral-900 dark:text-white">
+                la necessitat d’un canvi 
+                </span>
+                . L’ILP vol garantir un sistema més accessible, 
+                modern i representatiu per a tota la ciutadania.
               </p>
             </AnimatedContent>
 
@@ -137,10 +167,10 @@ function App() {
                     dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md
                   "
                 >
-                  <h3 className="text-xl font-semibold mb-3">Igualtat del vot</h3>
+                  <h3 className="text-xl font-semibold mb-3">Simplificar el vot</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Cada vot ha de tenir el mateix pes, visquis on visquis. L’ILP
-                    busca equilibrar la representació al Parlament.
+                    La ILP vol facilitar la participació, especialment dels catalans 
+                    que viuen a l’exterior, assegurant que votar sigui més fàcil i accessible.
                   </p>
                 </div>
               </AnimatedContent>
@@ -153,10 +183,10 @@ function App() {
                     dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md
                   "
                 >
-                  <h3 className="text-xl font-semibold mb-3">Més transparència</h3>
+                  <h3 className="text-xl font-semibold mb-3">Autogestió electoral</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Un sistema clar i just reforça la confiança de la ciutadania i la
-                    qualitat democràtica del nostre país.
+                    La proposta vol que Catalunya gestioni el seu propi cens 
+                    i els seus processos electorals mitjançant una Sindicatura Electoral pròpia.
                   </p>
                 </div>
               </AnimatedContent>
@@ -169,10 +199,11 @@ function App() {
                     dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md
                   "
                 >
-                  <h3 className="text-xl font-semibold mb-3">Representació real</h3>
+                  <h3 className="text-xl font-semibold mb-3">Un sistema modern</h3>
                   <p className="text-neutral-600 dark:text-gray-300 flex-grow">
-                    Tots els ciutadans mereixen que la seva veu sigui escoltada i
-                    reflectida a les institucions.
+                    La ILP aposta per millores com les vegueries, 
+                    una circumscripció exterior i nous tipus de vot com el vot delegat 
+                    i el vot electrònic.
                   </p>
                 </div>
               </AnimatedContent>
@@ -198,7 +229,7 @@ function App() {
         </div>
       </section>
 
-      {/* Sobre Nosaltres Section */}
+      {/* Sobre Nosaltres + Accions Parlamentàries */}
       <section
         id="about"
         className="
@@ -207,61 +238,131 @@ function App() {
           dark:bg-black dark:text-white
         "
       >
-        <div className="mx-auto max-w-6xl px-6 space-y-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide text-center">Sobre nosaltres</h2>
+        <div className="mx-auto max-w-7xl px-6 space-y-16">
 
-        <div className="relative border-l pl-8 space-y-12 border-neutral-200 dark:border-white/20">
-            <AnimatedContent distance={60} direction="horizontal" reverse duration={1}>
-              <div className="relative">
-                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-blue-600 shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2">Un moviment ciutadà</h3>
-                <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
-                  Aquesta ILP sorgeix de la mobilització de ciutadans i entitats compromeses amb la millora
-                  democràtica. La nostra força prové de la participació col·lectiva i la voluntat de canvi.
-                </p>
-              </div>
-            </AnimatedContent>
+          {/* MAIN SECTION TITLE */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide text-center">
+            Sobre...
+          </h2>
 
-            <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.2}>
-              <div className="relative">
-                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-black dark:bg-white shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2">Objectiu comú</h3>
-                <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
-                  El nostre objectiu és establir una llei electoral més justa i representativa per a Catalunya, on
-                  cada vot tingui el mateix pes i cap territori quedi sobrerrepresentat.
-                </p>
-              </div>
-            </AnimatedContent>
+          {/* === 2-COLUMN GRID === */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
 
-            <AnimatedContent distance={60} direction="horizontal" reverse duration={1} delay={0.4}>
-              <div className="relative">
-                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-red-500 shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2">Treball en xarxa</h3>
-                <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
-                  Som una xarxa de persones, organitzacions i voluntaris que col·laboren per recollir signatures,
-                  difondre la iniciativa i aconseguir el suport necessari per portar-la al Parlament.
-                </p>
-              </div>
-            </AnimatedContent>
+            {/* LEFT COLUMN – TITLE + TIMELINE */}
+            <div>
+              {/* LEFT COLUMN TITLE */}
+              <h3 className="text-2xl font-bold mb-8 text-left">
+                Sobre nosaltres
+              </h3>
 
-            <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
-              <div className="relative">
-                <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
-                <h3 className="text-xl font-semibold mb-2">Antecedents a la ILP</h3>
-                <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
-                  Consulta la informació completa sobre els antecedents i el context de la ILP al nostre lloc web oficial.
-                  <br />
-                  <a
-                    href="http://www.ilp-lleielectoral.cat/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                  >
-                    www.ilp-lleielectoral.cat
-                  </a>
-                </p>
+              <div className="relative border-l pl-8 space-y-12 border-neutral-200 dark:border-white/20">
+
+                <AnimatedContent distance={60} direction="horizontal" reverse duration={1}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-blue-600 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">Qui som</h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      La ILP Llei Electoral 2025 està impulsada per un grup de sis persones,
+                      cinc residents a la Catalunya exterior i una resident a Catalunya.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.2}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-black dark:bg-white shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">La Comissió Promotora</h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      Aquest grup format per dos homes i quatre dones és la Comissió
+                      Promotora de la ILP i la representa davant el Parlament.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" reverse duration={1} delay={0.4}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-red-500 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">Què hem fet fins ara</h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      Hem redactat el text, creat la memòria, constituït la Comissió Promotora
+                      i registrat la ILP al Parlament el 15 de setembre de 2025.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">El nostre origen</h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      L’ILP neix del treball de Catalans al Món i la FIEC, que durant anys han
+                      reclamat una llei electoral catalana pròpia.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
               </div>
-            </AnimatedContent>
+            </div>
+
+            {/* RIGHT COLUMN – TITLE + TIMELINE */}
+            <div>
+              {/* RIGHT COLUMN TITLE */}
+              <h3 className="text-2xl font-bold mb-8 text-left">
+                Sobre els lletrats del Parlament i la Mesa
+              </h3>
+
+              <div className="relative border-l pl-8 space-y-12 border-neutral-200 dark:border-white/20">
+
+                <AnimatedContent distance={60} direction="horizontal" reverse duration={1}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-blue-600 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">Informe jurídic favorable</h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      Els lletrats del Parlament van validar legalment la ILP i en van autoritzar
+                      l’admissió inicial.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.2}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-black dark:bg-white shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">
+                      Acord del Govern sobre l’afectació pressupostària
+                    </h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      El Govern va confirmar que caldria dotació pressupostària per implementar la llei.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" reverse duration={1} delay={0.4}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-red-500 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">
+                      Qualificació i admissió a tràmit
+                    </h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      La Mesa del Parlament en les sessions del 30/9 i 28/10 va admetre la ILP a tràmit.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+                <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
+                  <div className="relative">
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
+                    <h4 className="text-xl font-semibold mb-2">
+                      Publicació al BOPC
+                    </h4>
+                    <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
+                      El BOPC núm. 341 del 4/11 va publicar el text articulat de la ILP.
+                    </p>
+                  </div>
+                </AnimatedContent>
+
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

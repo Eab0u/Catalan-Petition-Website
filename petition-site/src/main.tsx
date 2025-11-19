@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PetitionForm from "./components/PetitionForm";
 import UnderConstruction from "./pages/UnderConstruction";
 import { ThemeProvider } from "./theme";
+import Documents from "./pages/Documents";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
           <Route path="/sign" element={<PetitionForm />} />
           <Route path="/under-construction" element={<UnderConstruction />} />
+          <Route path="/documents" element={<Documents />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

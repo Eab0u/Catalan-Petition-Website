@@ -37,10 +37,10 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
   const [navItems, setNavItems] = useState<NavItemConfig[]>([
     { text: "Informació", onClick: () => document.getElementById("info")?.scrollIntoView() },
-    { text: "Sobre nosaltres", onClick: () => document.getElementById("about")?.scrollIntoView() },
+    { text: "Sobre...", onClick: () => document.getElementById("about")?.scrollIntoView() },
     { text: "Seguretat", onClick: () => document.getElementById("security")?.scrollIntoView() },
     { text: "Preguntes freqüents & Contacte", onClick: () => document.getElementById("FAQ")?.scrollIntoView() },
-    { text: "Documents", onClick: () => navigate("/under-construction") },
+    { text: "Documents", onClick: () => navigate("/documents") },
   ]);
 
   useEffect(() => {
