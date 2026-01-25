@@ -2,12 +2,10 @@
 import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import Particles from "./components/Particles";
 import TextType from "./components/TextType";
 import AnimatedContent from "./components/AnimatedContent";
 import Carousel from "./components/Carousel";
 import Faqs from "./components/FAQs";
-import ProfileCard from './components/ProfileCard'
 import RotatingQA from "./components/RotatingQA";
 
 function App() {

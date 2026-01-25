@@ -12,11 +12,9 @@ export default function Counter({
   refreshInterval = 15000,
 }: CounterProps) {
   const [count, setCount] = useState(0);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
-    let fakeCount = 0;
 
     const API_BASE = import.meta.env.DEV
       ? import.meta.env.VITE_API_BASE
@@ -25,22 +23,19 @@ export default function Counter({
     const fetchCount = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/counter`);
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        if (!res.ok) return;
 
-        fakeCount = Math.min(fakeCount + 5000, goal);
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) return;
+
         const json = await res.json();
-        if (mounted) {
-          if (json.success) {
-            //setCount(fakeCount)
-            setCount(json.totalSignatures);
-            //setError(null);
-          } else {
-            setError("No s'ha pogut obtenir el comptador.");
-          }
+        if (!mounted) return;
+
+        if (json?.success === true && typeof json.totalSignatures === "number") {
+          setCount(json.totalSignatures);
         }
-      } catch (err) {
-        console.error("Failed to load counter:", err);
-        if (mounted) setError("Error carregant el comptador.");
+      } catch {
+        // fallada silenciosa: no es mostra cap error a la UI
       }
     };
 
@@ -55,17 +50,9 @@ export default function Counter({
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      {error && (
-        <p className="mb-2 rounded bg-red-600 px-3 py-2 text-sm font-semibold text-black dark:text-white">
-          {error}
-        </p>
-      )}
-
-      {/* Progress bar behind numbers */}
       <div className="relative">
         <ProgressBar value={count} goal={goal} />
 
-        {/* Numbers overlayed inside the bar */}
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-base md:text-lg font-semibold text-black dark:text-white flex items-baseline gap-1">
             <CountUp
