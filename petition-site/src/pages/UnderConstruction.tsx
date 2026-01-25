@@ -13,18 +13,6 @@ export default function UnderConstruction() {
         bg-neutral-100 dark:bg-black transition-colors duration-300
       "
     >
-      <div className="absolute inset-0">
-        <Particles
-          particleColors={["#ff0000", "#ffee00", "#0004ff"]}
-          particleCount={250}
-          particleSpread={10}
-          speed={0.15}
-          particleBaseSize={300}
-          moveParticlesOnHover
-          alphaParticles={false}
-          disableRotation={false}
-        />
-      </div>
 
       <div className="relative z-10 max-w-3xl px-6">
         <AnimatedContent distance={60} direction="vertical" duration={1}>

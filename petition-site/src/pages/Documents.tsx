@@ -13,19 +13,6 @@ export default function Documents() {
         bg-neutral-100 dark:bg-black transition-colors duration-300
       "
     >
-      {/* Background Particles */}
-      <div className="absolute inset-0">
-        <Particles
-          particleColors={["#ff0000", "#ffee00", "#0004ff"]}
-          particleCount={250}
-          particleSpread={10}
-          speed={0.15}
-          particleBaseSize={300}
-          moveParticlesOnHover
-          alphaParticles={false}
-          disableRotation={false}
-        />
-      </div>
 
       <div className="relative z-10 max-w-6xl w-full px-6 pt-8 pb-16 space-y-8">
 
@@ -74,7 +61,7 @@ export default function Documents() {
               "
             >
               <h3 className="text-xl font-semibold mb-3 text-black dark:text-white">
-                INFORME JURÍDIC.pdf
+                INFORME JURÍDIC
               </h3>
 
               <p className="text-neutral-700 dark:text-gray-300 mb-6 leading-relaxed">
@@ -108,7 +95,7 @@ export default function Documents() {
               "
             >
               <h3 className="text-xl font-semibold mb-3 text-black dark:text-white">
-                AUDA.pdf
+                ACORD DE LA MESA DEL PARLAMENT
               </h3>
 
               <p className="text-neutral-700 dark:text-gray-300 mb-6 leading-relaxed">
@@ -142,7 +129,7 @@ export default function Documents() {
               "
             >
               <h3 className="text-xl font-semibold mb-3 text-black dark:text-white">
-                ILP.pdf
+                TEXTE DE LA ILP
               </h3>
 
               <p className="text-neutral-700 dark:text-gray-300 mb-6 leading-relaxed">
@@ -175,27 +162,9 @@ export default function Documents() {
                 transition-all duration-300
               "
             >
-              <h3 className="text-xl font-semibold mb-3 text-black dark:text-white">
-                PARLAMENT DE CATALUNYA.pdf
+              <h3 className="text-xl font-semibold mb-3 text-black px-30 py-20 dark:text-white">
+                PROPERS DOCUMENTS!
               </h3>
-
-              <p className="text-neutral-700 dark:text-gray-300 mb-6 leading-relaxed">
-                Acord de la Mesa del Parlament sobre la qualificació i admissió a tràmit de la ILP, amb notificació oficial a la Comissió Promotora.
-              </p>
-
-              <a
-                href="/docs/PARLAMENT DE CATALUNYA.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  inline-block px-6 py-3 rounded-2xl font-semibold
-                  text-black dark:text-white border border-black/60 dark:border-white/30
-                  bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
-                  transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
-                "
-              >
-                Descarregar PDF
-              </a>
             </div>
           </AnimatedContent>
 

@@ -19,7 +19,7 @@ export default function ThemeToggle() {
         focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
       "
     >
-      {isDark ? "☀️ Llum" : "🌙 Fosc"}
+      {isDark ? "☀️ Clar" : "🌙 Fosc"}
     </button>
   );
 }

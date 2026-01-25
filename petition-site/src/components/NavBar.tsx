@@ -145,7 +145,7 @@ export default function NavBar() {
         </button>
       </div>
 
-      {/* ✅ Mobile Dropdown */}
+      {/* Mobile Dropdown */}
       {open && (
         <div
           id="mobile-dropdown"

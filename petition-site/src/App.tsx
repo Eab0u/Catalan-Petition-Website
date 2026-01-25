@@ -55,20 +55,6 @@ function App() {
           dark:bg-black dark:text-white
         "
       >
-        {/* Particle background */}
-        <div className="absolute inset-0 z-0">
-          <Particles
-            particleColors={["#ff0000", "#ffee00", "#0004ff"]}
-            particleCount={300}
-            particleSpread={10}
-            speed={0.15}
-            particleBaseSize={300}
-            moveParticlesOnHover={true}
-            alphaParticles={false}
-            disableRotation={false}
-          />
-        </div>
-
         {/* Content + rotating text now share the same stable z-layer */}
         <div className="relative z-10 max-w-4xl px-6 flex flex-col items-center mt-30">
 
@@ -83,7 +69,7 @@ function App() {
                   "Dona suport a Catalunya!",
                 ]}
                 typingSpeed={60}
-                pauseDuration={2500}
+                pauseDuration={5000}
                 showCursor={true}
                 cursorCharacter="|"
                 className="whitespace-nowrap"
@@ -111,7 +97,7 @@ function App() {
             Signa la Petició
           </button>
 
-          <RotatingQA items={rotatingTexts} interval={5000} fadeDuration={500} />
+          <RotatingQA items={rotatingTexts} interval={7500} fadeDuration={500} />
         </div>
 
         {/* Bottom fade */}
@@ -456,7 +442,7 @@ function App() {
       <section
         id="FAQ"
         className="
-          relative scroll-mt-40
+          relative scroll-mt-24
           bg-white text-neutral-900
           dark:bg-black dark:text-white
         "
@@ -469,33 +455,30 @@ function App() {
           "
           style={{ minHeight: "80vh" }}
         >
-          {/* Left side: FAQ */}
-          <div className="flex flex-col justify-center items-center md:items-start md:pl-10 lg:pl-20">
+
+          <div className="md:col-span-2 flex justify-center w-full">
             <div className="w-full max-w-3xl">
               <Faqs />
             </div>
           </div>
-
-          {/* Right side: Contact card */}
-          <div className="flex justify-center md:justify-center items-center mb-10 sm:mb-0">
-            <ProfileCard
-              avatarUrl="/RahulPic.png"
-              miniAvatarUrl="/hq720.png"
-              iconUrl="/iconpattern.png"
-              grainUrl="/grain.png"
-              name="Rahul M-I"
-              title="Big Fella"
-              handle="Eab0u"
-              status="Online"
-              contactText="Contact"
-              onContactClick={() =>
-                alert("Lloc web properament! \nEmail: rahulm7411@gmail.com")
-              }
-            />
-          </div>
         </div>
       </section>
 
+      {/* Creator Info */}
+      <div className="w-full bg-black text-white py-10">
+        <div className="mx-auto max-w-8xl px-6 sm:px-10 md:px-20 text-center text-sm">
+          <p className="font-medium">Creat pel Rahul Manchanda Izquierdo</p>
+          <p className="opacity-80">Universitat de Maryland, College Park</p>
+          <p className="mt-1">
+            <a
+              href="mailto:rman7411@gmail.com"
+              className="opacity-80 hover:opacity-100 transition-opacity"
+            >
+              rman7411@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
     </>
   );
 }
