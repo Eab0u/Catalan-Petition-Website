@@ -120,7 +120,7 @@ export default function NavBar() {
         <div className="hidden md:flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate("/under-construction")}
+            onClick={() => navigate("/sign")}
             className="
               cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-6 py-3 text-sm font-semibold
               bg-neutral-900 text-white hover:bg-neutral-800
@@ -184,7 +184,7 @@ export default function NavBar() {
             <button
               type="button"
               onClick={() => {
-                navigate("/under-construction");
+                navigate("/sign");
                 setOpen(false);
               }}
               className="

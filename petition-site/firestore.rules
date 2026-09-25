@@ -1,9 +1,26 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Petitions are written exclusively by the Cloud Function via Admin SDK.
+    // Client reads are not needed — the counter is served via /api/counter.
     match /petitions/{docId} {
-      allow create: if true;
-      allow read, update, delete: if false;
+      allow read, write: if false;
+    }
+
+    // sessions and rate_limits are internal — Admin SDK only.
+    match /sessions/{docId} {
+      allow read, write: if false;
+    }
+    match /rate_limits/{docId} {
+      allow read, write: if false;
+    }
+
+    // The global stats document is read by the public counter widget.
+    // Writes come only from the Cloud Function.
+    match /stats/{docId} {
+      allow read: if true;
+      allow write: if false;
     }
   }
 }

@@ -12,8 +12,7 @@ function App() {
   const navigate = useNavigate();
 
   const goToForm = () => {
-    // navigate("/sign"); // This is for when it is up and running
-    navigate("/under-construction");
+    navigate("/sign");
   };
 
   const rotatingTexts = [

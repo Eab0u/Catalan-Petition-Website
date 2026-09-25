@@ -1,84 +1,20 @@
-import React, { useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { petitionSchema, type PetitionSchemaType } from "../schemas/petitionSchema";
-import { useNavigate } from "react-router-dom";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { GradientText } from "./GradientText";
+import React, { useState } from "react";
 
-interface ApiResponse {
-  success: boolean;
-  message?: string;
-}
+const API_BASE = import.meta.env.DEV ? (import.meta.env.VITE_API_BASE as string) ?? "" : "";
 
 export default function PetitionForm() {
-  const navigate = useNavigate();
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const captchaRef = useRef<HCaptcha>(null);
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState(false);
 
-  const API_BASE = import.meta.env.DEV
-    ? import.meta.env.VITE_API_BASE
-    : "https://api-6n6hw37u3a-ew.a.run.app";
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<PetitionSchemaType>({
-    resolver: zodResolver(petitionSchema),
-  });
-
-  const onSubmit = async (data: PetitionSchemaType) => {
-    setErrorMessage(null);
-
-    if (!captchaToken) {
-      setErrorMessage("Si us plau, completa el captcha!");
+  const handleSign = (e: React.MouseEvent) => {
+    if (!consent) {
+      e.preventDefault();
+      setConsentError(true);
       return;
     }
-
-    try {
-      const datanaixement = data.datanaixement.replaceAll("-", "");
-      const tipusid = data.dni?.toUpperCase();
-
-      const payload = {
-        nom: data.nom,
-        cognom1: data.cognom1,
-        cognom2: data.cognom2 || "",
-        datanaixement,
-        tipusid,
-        address: data.address || "",
-        captchaToken,
-      };
-
-      const res = await fetch(`${API_BASE}/api/sign`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const json: ApiResponse = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.message);
-
-      setSubmitted(true);
-      setTimeout(() => navigate("/"), 3000);
-    } catch (err) {
-      const error = err instanceof Error ? err.message : String(err);
-      setErrorMessage(error || "S'ha produït un error en enviar la signatura.");
-    }
+    setConsentError(false);
+    window.location.href = `${API_BASE}/api/auth/start?consent=true`;
   };
-
-  if (submitted) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center bg-black text-white">
-        <div className="z-10 text-center space-y-4 bg-white/10 border border-white/30 backdrop-blur-xl shadow-lg p-8 rounded-2xl">
-          <h2 className="text-2xl font-bold">Gràcies per signar la petició!</h2>
-          <p className="text-lg">Redirigint a la pàgina principal...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <main
@@ -91,194 +27,135 @@ export default function PetitionForm() {
     >
       <div
         className="
-          relative z-10 w-full max-w-lg p-6 rounded-2xl 
+          relative z-10 w-full max-w-lg p-8 rounded-2xl
           bg-white/70 border border-black/60 backdrop-blur-xl shadow-lg
           dark:bg-white/10 dark:border-white/30
           transition-colors duration-300
         "
       >
-        <div className="flex justify-center">
-          <GradientText
-            text="Signa la Petició"
-            gradient="linear-gradient(90deg, #0004ff 0%, #ffcc00 30%, #ff0000 60%, #ffcc00 80%, #0004ff 100%)"
-            className="font-vastago text-3xl md:text-5xl font-bold tracking-tight"
-            neon
-          />
+        <div className="flex justify-center mb-6">
+          <h1 className="font-vastago text-3xl md:text-5xl font-bold tracking-tight text-black dark:text-white">
+            Signa la Petició
+          </h1>
         </div>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)(e);
-          }}
-          className="space-y-4"
-          noValidate
-        >
-          {/* Nom */}
-          <div>
-            <label className="block mb-1 font-semibold">Nom</label>
-            <input
-              {...register("nom")}
+        {/* What is idCAT Mòbil */}
+        <section className="mb-6 space-y-3 text-sm leading-relaxed text-neutral-700 dark:text-gray-300">
+          <p>
+            La signatura es realitza mitjançant{" "}
+            <span className="font-semibold text-black dark:text-white">idCAT Mòbil</span>,
+            el certificat digital mòbil del Consorci AOC. És un procés segur, verificat per
+            l'administració catalana, que garanteix que cada signatura és única i autèntica.
+          </p>
+          <p>
+            Si encara no tens l'idCAT Mòbil, ara pots obtenir-lo per{" "}
+            <span className="font-semibold text-black dark:text-white">
+              videoidentificació
+            </span>{" "}
+            sense desplaçar-te presencialment, sempre que tinguis un DNI o TIE espanyol
+            vigent. Aquesta modalitat està disponible des del 29 d'octubre de 2025.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <a
+              href="https://www.aoc.cat/serveis-aoc/idcat-mobil/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                transition-colors duration-300
-              "
-            />
-            {errors.nom && <p className="text-red-500 mt-1">{errors.nom.message}</p>}
-          </div>
-
-          {/* Cognoms */}
-          <div>
-            <label className="block mb-1 font-semibold">Primer cognom</label>
-            <input
-              {...register("cognom1")}
-              className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                transition-colors duration-300
-              "
-            />
-            {errors.cognom1 && <p className="text-red-500 mt-1">{errors.cognom1.message}</p>}
-          </div>
-
-          <div>
-            <label className="block mb-1 font-semibold">Segon cognom (opcional)</label>
-            <input
-              {...register("cognom2")}
-              className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                transition-colors duration-300
-              "
-            />
-            {errors.cognom2 && <p className="text-red-500 mt-1">{errors.cognom2.message}</p>}
-          </div>
-
-          {/* Data */}
-          <div>
-            <label className="block mb-1 font-semibold">Data de naixement</label>
-            <input
-              type="date"
-              {...register("datanaixement")}
-              className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                placeholder-gray-400 font-vastago tracking-tight
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                [&::-webkit-calendar-picker-indicator]:invert
-                [&::-webkit-calendar-picker-indicator]:opacity-70
-                [&::-webkit-calendar-picker-indicator]:hover:opacity-100
-                transition-colors duration-300
-              "
-            />
-            {errors.datanaixement && <p className="text-red-500 mt-1">{errors.datanaixement.message}</p>}
-          </div>
-
-          {/* DNI */}
-          <div>
-            <label className="block mb-1 font-semibold">DNI / NIE</label>
-            <input
-              {...register("dni")}
-              className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                transition-colors duration-300
-              "
-            />
-            {errors.dni && <p className="text-red-500 mt-1">{errors.dni.message}</p>}
-          </div>
-
-          {/* Adreça */}
-          <div>
-            <label className="block mb-1 font-semibold">Adreça</label>
-            <input
-              {...register("address")}
-              className="
-                w-full px-3 py-2 rounded-lg
-                bg-neutral-200/70 border border-black/40 text-black
-                dark:bg-black/30 dark:border-white/20 dark:text-white
-                focus:outline-none focus:ring-2 focus:ring-blue-400
-                transition-colors duration-300
-              "
-            />
-            {errors.address && <p className="text-red-500 mt-1">{errors.address.message}</p>}
-          </div>
-
-          {/* Consent */}
-          <div className="mt-4">
-            <label
-              className="
-                flex items-center gap-3 p-3 rounded-lg cursor-pointer
-                bg-neutral-200/70 border border-black/40 backdrop-blur-md
-                dark:bg-black/30 dark:border-white/20
-                hover:bg-neutral-300/70 dark:hover:bg-black/40
-                transition-colors duration-300
+                inline-block px-4 py-2 rounded-xl text-xs font-semibold
+                border border-black/40 dark:border-white/30
+                bg-white/60 dark:bg-white/10 backdrop-blur-sm
+                hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200
               "
             >
-              <input
-                type="checkbox"
-                {...register("consent")}
-                className="
-                  h-5 w-5 rounded-md border border-black/50 bg-white/80
-                  dark:border-white/30 dark:bg-black/50
-                  checked:bg-black dark:checked:bg-white
-                  cursor-pointer transition-colors duration-300
-                "
-              />
-              <span className="text-base font-semibold text-black dark:text-white leading-snug">
-                Accepto el tractament de dades per a aquesta ILP <br />
-                <span className="font-normal text-sm text-neutral-700 dark:text-gray-300">
-                  (vegeu la política de privacitat)
-                </span>
-              </span>
-            </label>
-            {errors.consent && <p className="text-red-500 text-sm mt-2">{errors.consent.message}</p>}
+              Obtenir idCAT Mòbil →
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=IdCATMobilDemo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                inline-block px-4 py-2 rounded-xl text-xs font-semibold
+                border border-black/40 dark:border-white/30
+                bg-white/60 dark:bg-white/10 backdrop-blur-sm
+                hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200
+              "
+            >
+              Vídeo explicatiu →
+            </a>
           </div>
+        </section>
 
-          {/* Captcha */}
-          <div className="flex justify-center mt-6">
-            <HCaptcha
-              ref={captchaRef}
-              sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY}
-              onVerify={(token) => setCaptchaToken(token)}
-              onExpire={() => setCaptchaToken(null)}
-              languageOverride="ca"
-            />
-          </div>
+        {/* How it works */}
+        <section className="mb-6 rounded-xl border border-black/20 dark:border-white/20 bg-neutral-100/60 dark:bg-white/5 p-4 text-sm space-y-1">
+          <p className="font-semibold text-black dark:text-white mb-2">Com funciona</p>
+          <ol className="list-decimal list-inside space-y-1 text-neutral-700 dark:text-gray-300">
+            <li>Accepta el tractament de dades a continuació.</li>
+            <li>Fes clic a «Signa amb idCAT Mòbil».</li>
+            <li>Autentica't amb el teu idCAT Mòbil al portal del Consorci AOC.</li>
+            <li>Signa el text de la ILP electrònicament.</li>
+            <li>Seràs redirigit aquí amb la confirmació.</li>
+          </ol>
+        </section>
 
-          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
+        {/* Consent checkbox */}
+        <div className="mb-6">
+          <label
             className="
-              w-full mt-4 cursor-pointer rounded-2xl px-6 py-3 text-base font-semibold 
-              text-black dark:text-white relative border
-              bg-white/70 border border-black/60 backdrop-blur-xl
-              dark:bg-black/40 dark:border-white/30
-              before:absolute before:inset-0 before:rounded-2xl 
-              before:p-[2px] before:bg-gradient-to-r before:from-blue-500 before:via-red-500 before:to-yellow-500
-              before:opacity-0 hover:before:opacity-100
-              hover:scale-105
-              transition-all duration-300 ease-in-out
-              disabled:opacity-50
-              shadow-lg overflow-hidden
+              flex items-start gap-3 p-3 rounded-lg cursor-pointer
+              bg-neutral-200/70 border border-black/40 backdrop-blur-md
+              dark:bg-black/30 dark:border-white/20
+              hover:bg-neutral-300/70 dark:hover:bg-black/40
+              transition-colors duration-300
             "
           >
-            <span className="relative z-10">{isSubmitting ? "Enviant..." : "Enviar"}</span>
-          </button>
-        </form>
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => {
+                setConsent(e.target.checked);
+                if (e.target.checked) setConsentError(false);
+              }}
+              className="
+                mt-0.5 h-5 w-5 shrink-0 rounded-md border border-black/50 bg-white/80
+                dark:border-white/30 dark:bg-black/50
+                checked:bg-black dark:checked:bg-white
+                cursor-pointer transition-colors duration-300
+              "
+            />
+            <span className="text-sm font-semibold text-black dark:text-white leading-snug">
+              Accepto el tractament de les meves dades personals per a la present ILP
+              d'acord amb la política de privacitat i el RGPD.{" "}
+              <span className="font-normal text-neutral-600 dark:text-gray-400">
+                Les dades verificades per idCAT Mòbil s'emmagatzemaran xifrades i
+                s'usaran exclusivament per al recompte oficial de signatures.
+              </span>
+            </span>
+          </label>
+          {consentError && (
+            <p className="mt-2 text-sm text-red-500">
+              Has d'acceptar el tractament de dades per continuar.
+            </p>
+          )}
+        </div>
+
+        {/* CTA */}
+        <button
+          onClick={handleSign}
+          className="
+            w-full cursor-pointer rounded-2xl px-6 py-4 text-base font-semibold
+            text-black dark:text-white border border-black/60 dark:border-white/30
+            bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
+            transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
+            disabled:opacity-50
+          "
+        >
+          Signa amb idCAT Mòbil
+        </button>
+
+        <p className="mt-4 text-center text-xs text-neutral-500 dark:text-gray-500">
+          La identitat és verificada per Consorci AOC. No compartim les teves dades
+          amb tercers.
+        </p>
       </div>
     </main>
   );
