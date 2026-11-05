@@ -1,0 +1,77 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Only one deploy (or build) per branch/PR in flight at a time.
+concurrency:
+  group: firebase-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write # required by google-github-actions/auth (Workload Identity Federation)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install frontend dependencies
+        working-directory: petition-site
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: petition-site
+        run: npm run build
+
+      - name: Install functions dependencies
+        working-directory: petition-site/functions
+        run: npm ci
+
+      - name: Build functions
+        working-directory: petition-site/functions
+        run: npm run build
+
+      # Everything below only runs on a push to main — PRs stop here with a
+      # build check and never see credentials or deploy anything.
+
+      # Interim only: VALID_CLIENT_SECRET rides along in this generated
+      # dotenv file because the code still reads it as a plain env var.
+      # Tracked as a follow-up to move it to Secret Manager (defineSecret).
+      - name: Write functions runtime config
+        if: github.event_name == 'push'
+        working-directory: petition-site/functions
+        run: |
+          cat > .env.petition-site-22334 <<EOF
+          VALID_BASE_URL=${{ vars.VALID_BASE_URL }}
+          VALID_CLIENT_ID=${{ vars.VALID_CLIENT_ID }}
+          VALID_REDIRECT_URI=${{ vars.VALID_REDIRECT_URI }}
+          VALID_SIGN_CALLBACK_URI=${{ vars.VALID_SIGN_CALLBACK_URI }}
+          FRONTEND_BASE_URL=${{ vars.FRONTEND_BASE_URL }}
+          EVIDENCE_BUCKET_NAME=${{ vars.EVIDENCE_BUCKET_NAME }}
+          BACKUP_BUCKET_NAME=${{ vars.BACKUP_BUCKET_NAME }}
+          ADMIN_UIDS=${{ vars.ADMIN_UIDS }}
+          VALID_CLIENT_SECRET=${{ secrets.VALID_CLIENT_SECRET }}
+          EOF
+
+      - name: Authenticate to Google Cloud
+        if: github.event_name == 'push'
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: petition-site-22334
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - name: Deploy to Firebase
+        if: github.event_name == 'push'
+        working-directory: petition-site
+        run: npx firebase deploy --only hosting,functions --project petition-site-22334 --non-interactive

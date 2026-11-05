@@ -54,7 +54,14 @@ app.get("/api/counter", async (_req, res) => {
 
 // ── Exports ───────────────────────────────────────────────────────────────────
 
-export const api = onRequest({ region: "europe-west1" }, app);
+export const api = onRequest(
+  {
+    region: "europe-west1",
+    vpcConnector: "valid-connector",
+    vpcConnectorEgressSettings: "ALL_TRAFFIC",
+  },
+  app
+);
 
 // Weekly backup: v1 pubsub schedule so the Firebase emulator can load it
 // without needing Cloud Scheduler API access. Behavior in production is

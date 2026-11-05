@@ -1,5 +1,4 @@
 import React from "react";
-import Particles from "../components/Particles";
 import AnimatedContent from "../components/AnimatedContent";
 import { useNavigate } from "react-router-dom";
 

@@ -10,10 +10,6 @@ interface NavItemConfig {
   onClick: () => void;
 }
 
-interface RemoteNavItem {
-  text: string;
-}
-
 function NavItem({ text, onClick }: NavItemConfig) {
   return (
     <button
@@ -35,41 +31,13 @@ function NavItem({ text, onClick }: NavItemConfig) {
 export default function NavBar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [navItems, setNavItems] = useState<NavItemConfig[]>([
+  const navItems: NavItemConfig[] = [
     { text: "Informació", onClick: () => document.getElementById("info")?.scrollIntoView() },
     { text: "Sobre...", onClick: () => document.getElementById("about")?.scrollIntoView() },
     { text: "Seguretat", onClick: () => document.getElementById("security")?.scrollIntoView() },
     { text: "Preguntes freqüents & Contacte", onClick: () => document.getElementById("FAQ")?.scrollIntoView() },
     { text: "Documents", onClick: () => navigate("/documents") },
-  ]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetchNavItems() {
-      try {
-        const response = await fetch("/api/navItems");
-        if (!response.ok) throw new Error(`Failed to fetch nav items: ${response.status}`);
-
-        const data: RemoteNavItem[] = await response.json();
-        if (!cancelled && Array.isArray(data)) {
-          setNavItems(
-            data.map((item) => ({
-              text: item.text,
-              onClick: () => alert(`Navigate to ${item.text}`),
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch navigation items", error);
-      }
-    }
-
-    fetchNavItems();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  ];
 
   // Disable background scroll when menu open
   useEffect(() => {

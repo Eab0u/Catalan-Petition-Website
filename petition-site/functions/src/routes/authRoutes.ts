@@ -102,8 +102,15 @@ async function checkIpRateLimit(ip: string): Promise<boolean> {
 }
 
 function getClientIp(req: express.Request): string {
+  // Cloud Functions sits behind exactly one trusted proxy (Google Front End),
+  // which appends the real connecting IP as the LAST entry in X-Forwarded-For.
+  // Any earlier entries are client-supplied and can be spoofed to bypass the
+  // rate limit, so they must not be trusted.
   const forwarded = req.headers["x-forwarded-for"];
-  if (typeof forwarded === "string") return forwarded.split(",")[0].trim();
+  if (typeof forwarded === "string") {
+    const parts = forwarded.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length > 0) return parts[parts.length - 1];
+  }
   return req.ip ?? req.socket.remoteAddress ?? "unknown";
 }
 
@@ -276,29 +283,33 @@ signRouter.get("/callback", async (req, res) => {
     const db = admin.firestore();
     const nifHash = sha256Hex(userInfo.identifier.toUpperCase());
 
-    // Final dedup check in case of concurrent submissions
-    const alreadySigned = await nifAlreadySigned(nifHash);
-    if (alreadySigned) {
-      await deleteSession(state);
-      return redirectToResult(res, "error", "ja_signat");
-    }
-
     // Split surnames defensively — VALId may return either surname1/surname2
     // separately or a combined `surnames` string depending on registration.
     const { surname1, surname2 } = splitSurnames(userInfo);
 
-    await db.collection("petitions").add({
-      nom: userInfo.name,
-      cognom1: surname1,
-      cognom2: surname2,
-      nif: userInfo.identifier.toUpperCase(),
-      nifHash,
-      assuranceLevel: userInfo.assuranceLevel,
-      method: "idcatmobil",
-      signatureCode,
-      evidencePath,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    // Dedup atomically: doc ID is the nifHash, and create() fails if it
+    // already exists. This closes the race that a query-then-add allows
+    // when two concurrent submissions for the same NIF interleave.
+    try {
+      await db.collection("petitions").doc(nifHash).create({
+        nom: userInfo.name,
+        cognom1: surname1,
+        cognom2: surname2,
+        nif: userInfo.identifier.toUpperCase(),
+        nifHash,
+        assuranceLevel: userInfo.assuranceLevel,
+        method: "idcatmobil",
+        signatureCode,
+        evidencePath,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (err) {
+      if ((err as { code?: number }).code === 6 /* ALREADY_EXISTS */) {
+        await deleteSession(state);
+        return redirectToResult(res, "error", "ja_signat");
+      }
+      throw err;
+    }
 
     await db
       .doc("stats/global")

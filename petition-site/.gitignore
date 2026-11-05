@@ -23,11 +23,17 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
+# Environment variables — .env.* also covers Firebase's project-specific
+# files like functions/.env.petition-site-22334, which hold real secrets
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
-# Firebase credentials if you ever export them
-firebase.json
-.firebaserc
+# Service account keys — should never exist; CI uses Workload Identity
+# Federation instead of a downloaded key
+*service-account*.json
+*serviceAccountKey*.json
+
+# NOTE: firebase.json and .firebaserc are NOT secrets — they're project
+# config that GitHub Actions needs checked out to run `firebase deploy`.
+# Do not re-add them here.
