@@ -6,6 +6,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import authRouter, { signRouter } from "./routes/authRoutes";
 import adminRouter from "./routes/adminRoutes";
 import { runWeeklyBackup } from "./backup";
+import { validClientSecret } from "./validClient";
 
 admin.initializeApp();
 
@@ -59,6 +60,7 @@ export const api = onRequest(
     region: "europe-west1",
     vpcConnector: "valid-connector",
     vpcConnectorEgressSettings: "ALL_TRAFFIC",
+    secrets: [validClientSecret],
   },
   app
 );

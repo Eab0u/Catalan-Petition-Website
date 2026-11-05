@@ -44,9 +44,9 @@ jobs:
       # Everything below only runs on a push to main — PRs stop here with a
       # build check and never see credentials or deploy anything.
 
-      # Interim only: VALID_CLIENT_SECRET rides along in this generated
-      # dotenv file because the code still reads it as a plain env var.
-      # Tracked as a follow-up to move it to Secret Manager (defineSecret).
+      # VALID_CLIENT_SECRET is NOT written here — it's bound via
+      # defineSecret() / Secret Manager (see secret create command),
+      # which `firebase deploy` wires up on its own.
       - name: Write functions runtime config
         if: github.event_name == 'push'
         working-directory: petition-site/functions
@@ -60,7 +60,6 @@ jobs:
           EVIDENCE_BUCKET_NAME=${{ vars.EVIDENCE_BUCKET_NAME }}
           BACKUP_BUCKET_NAME=${{ vars.BACKUP_BUCKET_NAME }}
           ADMIN_UIDS=${{ vars.ADMIN_UIDS }}
-          VALID_CLIENT_SECRET=${{ secrets.VALID_CLIENT_SECRET }}
           EOF
 
       - name: Authenticate to Google Cloud

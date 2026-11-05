@@ -19,6 +19,7 @@ import {
   initBasicSignature,
   getBasicSignature,
   splitSurnames,
+  validClientSecret,
   ValidConfig,
 } from "../validClient";
 import {
@@ -34,7 +35,7 @@ const router = express.Router();
 function getValidConfig(): ValidConfig {
   const baseUrl = process.env.VALID_BASE_URL;
   const clientId = process.env.VALID_CLIENT_ID;
-  const clientSecret = process.env.VALID_CLIENT_SECRET;
+  const clientSecret = validClientSecret.value();
   const redirectUri = process.env.VALID_REDIRECT_URI;
   const signCallbackUri = process.env.VALID_SIGN_CALLBACK_URI;
 

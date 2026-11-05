@@ -4,7 +4,12 @@
 
 import fetch from "node-fetch";
 import crypto from "crypto";
+import { defineSecret } from "firebase-functions/params";
 import { PETITION_TEXT } from "./petitionConfig";
+
+// Bound to the `api` function's options in index.ts so Firebase grants the
+// function's runtime service account access to this Secret Manager secret.
+export const validClientSecret = defineSecret("VALID_CLIENT_SECRET");
 
 export interface ValidConfig {
   baseUrl: string;         // e.g. https://valid-pre.aoc.cat
