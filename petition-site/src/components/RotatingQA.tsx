@@ -35,7 +35,7 @@ export default function RotatingQA({
   const item = items[index];
 
   return (
-    <div className="h-32 max-w-2xl flex flex-col items-center justify-center text-center">
+    <div data-testid="rotating-qa" className="h-32 max-w-2xl flex flex-col items-center justify-center text-center">
       <div
         className={`
           transition-opacity duration-700 will-change-opacity

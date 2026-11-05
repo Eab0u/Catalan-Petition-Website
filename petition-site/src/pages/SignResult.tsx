@@ -114,7 +114,7 @@ export default function SignResult() {
   return (
     <main
       className={`
-        relative min-h-screen w-full flex items-center justify-center px-4
+        relative min-h-dvh w-full flex items-center justify-center px-4
         bg-gradient-to-b ${bgColor}
         transition-colors duration-300
       `}

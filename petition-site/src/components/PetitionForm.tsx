@@ -19,7 +19,7 @@ export default function PetitionForm() {
   return (
     <main
       className="
-        relative min-h-screen flex items-center justify-center px-4
+        relative min-h-dvh flex items-center justify-center px-4
         bg-neutral-100 text-black
         dark:bg-black dark:text-white
         transition-colors duration-300
@@ -40,7 +40,7 @@ export default function PetitionForm() {
         </div>
 
         {/* What is idCAT Mòbil */}
-        <section className="mb-6 space-y-3 text-sm leading-relaxed text-neutral-700 dark:text-gray-300">
+        <section className="mb-6 space-y-3 leading-relaxed text-neutral-700 dark:text-gray-300">
           <p>
             La signatura es realitza mitjançant{" "}
             <span className="font-semibold text-black dark:text-white">idCAT Mòbil</span>,
@@ -61,7 +61,7 @@ export default function PetitionForm() {
               target="_blank"
               rel="noopener noreferrer"
               className="
-                inline-block px-4 py-2 rounded-xl text-xs font-semibold
+                inline-block px-4 py-2 rounded-xl text-sm font-semibold
                 border border-black/40 dark:border-white/30
                 bg-white/60 dark:bg-white/10 backdrop-blur-sm
                 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200
@@ -74,7 +74,7 @@ export default function PetitionForm() {
               target="_blank"
               rel="noopener noreferrer"
               className="
-                inline-block px-4 py-2 rounded-xl text-xs font-semibold
+                inline-block px-4 py-2 rounded-xl text-sm font-semibold
                 border border-black/40 dark:border-white/30
                 bg-white/60 dark:bg-white/10 backdrop-blur-sm
                 hover:bg-white/80 dark:hover:bg-white/20 transition-all duration-200
@@ -86,7 +86,7 @@ export default function PetitionForm() {
         </section>
 
         {/* How it works */}
-        <section className="mb-6 rounded-xl border border-black/20 dark:border-white/20 bg-neutral-100/60 dark:bg-white/5 p-4 text-sm space-y-1">
+        <section className="mb-6 rounded-xl border border-black/20 dark:border-white/20 bg-neutral-100/60 dark:bg-white/5 p-4 space-y-1">
           <p className="font-semibold text-black dark:text-white mb-2">Com funciona</p>
           <ol className="list-decimal list-inside space-y-1 text-neutral-700 dark:text-gray-300">
             <li>Accepta el tractament de dades a continuació.</li>
@@ -122,7 +122,7 @@ export default function PetitionForm() {
                 cursor-pointer transition-colors duration-300
               "
             />
-            <span className="text-sm font-semibold text-black dark:text-white leading-snug">
+            <span className="font-semibold text-black dark:text-white leading-snug">
               Accepto el tractament de les meves dades personals per a la present ILP
               d'acord amb la política de privacitat i el RGPD.{" "}
               <span className="font-normal text-neutral-600 dark:text-gray-400">
@@ -132,7 +132,7 @@ export default function PetitionForm() {
             </span>
           </label>
           {consentError && (
-            <p className="mt-2 text-sm text-red-500">
+            <p className="mt-2 text-red-600 dark:text-red-400">
               Has d'acceptar el tractament de dades per continuar.
             </p>
           )}
@@ -143,16 +143,16 @@ export default function PetitionForm() {
           onClick={handleSign}
           className="
             w-full cursor-pointer rounded-2xl px-6 py-4 text-base font-semibold
-            text-black dark:text-white border border-black/60 dark:border-white/30
-            bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
-            transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
+            bg-senyera-red text-white
+            shadow-lg
+            transition-all duration-300 hover:scale-105 hover:bg-senyera-yellow hover:text-black
             disabled:opacity-50
           "
         >
           Signa amb idCAT Mòbil
         </button>
 
-        <p className="mt-4 text-center text-xs text-neutral-500 dark:text-gray-500">
+        <p className="mt-4 text-center text-neutral-500 dark:text-gray-500">
           La identitat és verificada per Consorci AOC. No compartim les teves dades
           amb tercers.
         </p>

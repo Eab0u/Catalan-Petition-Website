@@ -1,12 +1,109 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 /* stylelint-disable-next-line unknownAtRules */
 @custom-variant dark (&:where(.dark, .dark *));
 
-html,body {
+/* === Design tokens ===
+   Custom colors declared here (bg-senyera-red etc) are hand-authored as
+   plain CSS below, not relying on theme-driven utility generation. */
+@theme {
+  --color-senyera-yellow: #fcdd09;
+  --color-senyera-red: #da121a;
+  --color-senyera-blue: #004b98;
+}
+
+/* Hand-authored, not @theme-generated: this build's @theme block is not
+   merging new tokens into utility generation (confirmed with an isolated
+   minimal repro — built-in utilities compile fine, no custom @theme
+   addition of any kind, color or font, ever produces a matching utility,
+   even after upgrading tailwindcss/@tailwindcss/vite to the latest 4.3.4).
+   Writing the exact rules directly sidesteps that bug entirely. */
+.font-vastago {
+  font-family: "Vastago Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+.bg-senyera-red {
+  background-color: #da121a;
+}
+.bg-senyera-yellow {
+  background-color: #fcdd09;
+}
+.text-senyera-red {
+  color: #da121a;
+}
+.border-senyera-red {
+  border-color: #da121a;
+}
+@media (hover: hover) {
+  .hover\:bg-senyera-yellow:hover {
+    background-color: #fcdd09;
+  }
+}
+
+/* Fluid typography: scales continuously with viewport instead of jumping
+   at breakpoints. Used for the hero headline, tuned (from the real
+   measured rendered width of the longest rotating phrase, "ILP per una
+   llei electoral justa.", in Vastago Grotesk Bold) so it always fits on
+   one line with ~10% margin to spare, down to 360px wide. */
+.text-hero {
+  font-size: clamp(1.25rem, -0.08rem + 5.9vw, 3.4rem);
+}
+
+html, body {
   scroll-behavior: smooth;
-  overflow-x:hidden;
-  width:100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer base {
+  /* Accessibility floor: body copy at or above 18px for an older audience.
+     Anything with an explicit Tailwind text-size utility overrides this. */
+  body {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  /* Visible focus ring everywhere, keyboard and touch alike. */
+  :focus-visible {
+    outline: 3px solid var(--color-senyera-red);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+}
+
+/* Safe-area insets for notched phones, used by full-bleed hero sections. */
+.safe-area-top {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+.safe-area-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+
+/* Subtle grain texture overlay for "soft depth" sections. Decorative only. */
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("/grain.png");
+  background-size: 180px 180px;
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay {
+    opacity: 0.035;
+  }
 }
 
 /* === Vastago Grotesk Font Faces === */

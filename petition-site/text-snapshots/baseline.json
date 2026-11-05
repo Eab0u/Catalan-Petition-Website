@@ -1,0 +1,78 @@
+{
+  "home": {
+    "path": "/",
+    "staticText": "Informació Sobre... Seguretat Preguntes freqüents & Contacte Documents Signa la Petició 🌙 Fosc Recollida| Dona suport a la ILP per una llei electoral justa a Catalunya. 0 / 50,000 Signa la Petició Ens hi heu d’ajudar tots! Necessitarem voluntaris que expliquin el projecte, ajudin a difondre’l i contribueixin a fer-lo arribar arreu del país. Per què aquesta ILP? Aquesta iniciativa neix després de dècades d’intents per dotar Catalunya d’una llei electoral pròpia. Les dificultats de vot, especialment per a la Catalunya exterior, i la manca d’un model adaptat al país han fet evident la necessitat d’un canvi. L’ILP vol garantir un sistema més accessible, modern i representatiu per a tota la ciutadania. Simplificar el vot La ILP vol facilitar la participació, especialment dels catalans que viuen a l’exterior, assegurant que votar sigui més fàcil i accessible. Autogestió electoral La proposta vol que Catalunya gestioni el seu propi cens i els seus processos electorals mitjançant una Sindicatura Electoral pròpia. Un sistema modern La ILP aposta per millores com les vegueries, una circumscripció exterior i nous tipus de vot com el vot delegat i el vot electrònic. Sobre... Sobre nosaltres Qui som La ILP Llei Electoral 2025 està impulsada per un grup de sis persones, cinc residents a la Catalunya exterior i una resident a Catalunya. La Comissió Promotora Aquest grup format per dos homes i quatre dones és la Comissió Promotora de la ILP i la representa davant el Parlament. Què hem fet fins ara Hem redactat el text, creat la memòria, constituït la Comissió Promotora i registrat la ILP al Parlament el 15 de setembre de 2025. El nostre origen L’ILP neix del treball de Catalans al Món i la FIEC, que durant anys han reclamat una llei electoral catalana pròpia. Sobre els lletrats del Parlament i la Mesa Informe jurídic favorable Els lletrats del Parlament van validar legalment la ILP i en van autoritzar l’admissió inicial. Acord del Govern sobre l’afectació pressupostària El Govern va confirmar que caldria dotació pressupostària per implementar la llei. Qualificació i admissió a tràmit La Mesa del Parlament en les sessions del 30/9 i 28/10 va admetre la ILP a tràmit. Publicació al BOPC El BOPC núm. 341 del 4/11 va publicar el text articulat de la ILP. Seguretat La protecció de les teves dades personals i la transparència del procés són fonamentals per a nosaltres. La nostra plataforma utilitza tecnologies modernes com el xifratge TLS 1.3 i el processament amb hash SHA-256 per garantir que la informació es mantingui segura i anonimitzada. A més, complim amb la normativa europea GDPR, assegurant drets com el dret a l’oblit i el dret de rectificació. Tot això té un objectiu clar: oferir la màxima seguretat i confiança perquè cada ciutadà pugui participar amb tranquil·litat i transparència. Per garantir-ho, realitzem auditories periòdiques i mantenim tots els processos sota codi obert, de manera que qualsevol persona pugui verificar el correcte funcionament de la plataforma. Protecció de dades Les signatures es processen amb hash SHA-256 i emmagatzemades de forma anonimitzada. Compliment GDPR Ens ajustem a la normativa europea per garantir privadesa, dret a l’oblit i transparència. Infraestructura segura Les dades es guarden en servidors europeus amb xifratge TLS 1.3 i proteccions avançades. Control ciutadà L’accés és limitat a administradors verificats, amb auditories públiques disponibles. Transparència total Cada pas del procés és documentat i obert a revisió pública per assegurar la confiança. Protecció de dades Les signatures es processen amb hash SHA-256 i emmagatzemades de forma anonimitzada. Preguntes Freqüents Tens dubtes sobre la iniciativa o el procés de signatures? Aquí trobaràs respostes clares perquè puguis participar amb seguretat i confiança. Per què hauria de signar aquesta ILP? + Perquè aquesta és una Llei electoral que equipara els drets de tots els catalans i facilita l’accés al vot. Signant-hi, dónes suport a un sistema electoral més just, modern i representatiu. Qui pot signar la ILP? + Pot signar qualsevol persona que no estigui privada de drets polítics i que compleixi els requisits següents: condició política de català; més de setze anys i nacionalitat espanyola; ciutadans de la UE, Islàndia, Liechtenstein, Noruega o Suïssa empadronats a Catalunya; o residents legals a Espanya inscrits al padró. Com puc verificar que la meva signatura s’ha comptabilitzat? + Després de signar rebràs una confirmació immediata. El comptador públic del web s’actualitza en temps real amb el total de suports rebuts. Què passa si s’arriba a l’objectiu de signatures? + Quan s’assoleixin les 50.000 signatures, la ILP es presentarà al Parlament per iniciar el debat a la Comissió d’Afers Institucionals (CAI). Què passarà amb les signatures que s’han recollit? + Un cop verificades per la Comissió de Control, la Comissió Promotora està obligada legalment a destruir-les. Del procés se n’informa oficialment al Parlament. Creat pel Rahul Manchanda Izquierdo Universitat de Maryland, College Park rman7411@gmail.com",
+    "heroRotatingText": [
+      "Dona suport a Catalunya!",
+      "ILP per una llei electoral justa.",
+      "Recollida de Signatures."
+    ],
+    "rotatingQA": [
+      "Com ho volem fer? Aquesta serà la primera ILP que planteja la recollida electrònica de signatures, utilitzant identitats digitals com l'idCAT Mòbil.",
+      "Com pots ajudar? Pots signar la ILP, oferir-te com a voluntari, organitzar actes al teu municipi o difondre’ns a les xarxes. Tot suport és valuós.",
+      "Ens hi heu d’ajudar tots! Necessitarem voluntaris que expliquin el projecte, ajudin a difondre’l i contribueixin a fer-lo arribar arreu del país.",
+      "Quin és el nostre proper objectiu? Difondre i donar a conèixer el projecte de país que representa la ILP Llei Electoral Catalana. És un projecte per a tothom i necessita una implicació àmplia.",
+      "Què és el que voldríem? Que els representants de la sobirania catalana trobin el consens per aprovar la llei i avançar cap a un sistema electoral més just."
+    ]
+  },
+  "sign": {
+    "path": "/sign",
+    "staticText": "Signa la Petició La signatura es realitza mitjançant idCAT Mòbil, el certificat digital mòbil del Consorci AOC. És un procés segur, verificat per l'administració catalana, que garanteix que cada signatura és única i autèntica. Si encara no tens l'idCAT Mòbil, ara pots obtenir-lo per videoidentificació sense desplaçar-te presencialment, sempre que tinguis un DNI o TIE espanyol vigent. Aquesta modalitat està disponible des del 29 d'octubre de 2025. Obtenir idCAT Mòbil → Vídeo explicatiu → Com funciona Accepta el tractament de dades a continuació. Fes clic a «Signa amb idCAT Mòbil». Autentica't amb el teu idCAT Mòbil al portal del Consorci AOC. Signa el text de la ILP electrònicament. Seràs redirigit aquí amb la confirmació. Accepto el tractament de les meves dades personals per a la present ILP d'acord amb la política de privacitat i el RGPD. Les dades verificades per idCAT Mòbil s'emmagatzemaran xifrades i s'usaran exclusivament per al recompte oficial de signatures. Signa amb idCAT Mòbil La identitat és verificada per Consorci AOC. No compartim les teves dades amb tercers."
+  },
+  "sign-result-success": {
+    "path": "/sign/result?status=success",
+    "staticText": "✓ Signatura registrada! Gràcies per signar la ILP Llei Electoral Catalana. La teva signatura electrònica ha estat verificada i registrada correctament. Rebràs una confirmació per correu electrònic si has facilitat la teva adreça en el procés d'idCAT Mòbil. Tornar a la pàgina principal"
+  },
+  "sign-result-cancelled": {
+    "path": "/sign/result?status=cancelled",
+    "staticText": "↩ Signatura cancel·lada Has cancel·lat el procés de signatura. Pots tornar a intentar-ho quan vulguis. Tornar a signar Pàgina principal"
+  },
+  "sign-result-error-ja_signat": {
+    "path": "/sign/result?status=error&message=ja_signat",
+    "staticText": "✗ Error en la signatura Ja hem registrat una signatura amb aquest NIF/NIE. Cada persona pot signar una sola vegada. Pàgina principal"
+  },
+  "sign-result-error-sessio_expirada": {
+    "path": "/sign/result?status=error&message=sessio_expirada",
+    "staticText": "✗ Error en la signatura La sessió ha expirat. Torna a intentar-ho. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-sessio_invalida": {
+    "path": "/sign/result?status=error&message=sessio_invalida",
+    "staticText": "✗ Error en la signatura Sessió invàlida. Torna a intentar-ho. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-consent_required": {
+    "path": "/sign/result?status=error&message=consent_required",
+    "staticText": "✗ Error en la signatura Has d'acceptar el tractament de dades per signar. Pàgina principal"
+  },
+  "sign-result-error-massa_peticions": {
+    "path": "/sign/result?status=error&message=massa_peticions",
+    "staticText": "✗ Error en la signatura S'han realitzat massa intents des d'aquesta adreça IP. Torna-ho a provar d'aquí a una hora. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-params_invalids": {
+    "path": "/sign/result?status=error&message=params_invalids",
+    "staticText": "✗ Error en la signatura Paràmetres invàlids rebuts del servei de signatura. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-signatura_fallida": {
+    "path": "/sign/result?status=error&message=signatura_fallida",
+    "staticText": "✗ Error en la signatura El servei de signatura ha retornat un error. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-server_error": {
+    "path": "/sign/result?status=error&message=server_error",
+    "staticText": "✗ Error en la signatura Error intern del servidor. Torna a intentar-ho en uns minuts. Tornar a intentar Pàgina principal"
+  },
+  "sign-result-error-__unknown_key_fallback__": {
+    "path": "/sign/result?status=error&message=__unknown_key_fallback__",
+    "staticText": "✗ Error en la signatura S'ha produït un error inesperat. Tornar a intentar Pàgina principal"
+  },
+  "admin-logged-out": {
+    "path": "/admin",
+    "staticText": "Administració — ILP Electoral Inicia sessió amb el compte d'administrador per accedir a les funcions d'exportació. Inicia sessió amb Google ← Tornar a la pàgina principal"
+  },
+  "documents": {
+    "path": "/documents",
+    "staticText": "Documents Aquí trobaràs tots els documents oficials relacionats amb la ILP. Pots descarregar-los directament o consultar-los en línia. Tornar a la pàgina principal INFORME JURÍDIC Informe jurídic emès pels lletrats del Parlament sobre la conformitat legal i l’admissió a tràmit de la Proposició de llei electoral de Catalunya. Descarregar PDF ACORD DE LA MESA DEL PARLAMENT Comunicació oficial de la Secretaria General del Parlament sobre l’afectació pressupostària de la ILP i els requisits establerts pel Reglament. Descarregar PDF TEXTE DE LA ILP Document complet de la presentació de la ILP: sol·licitud, annexos, text articulat, memòria justificativa i relació de membres de la Comissió Promotora. Descarregar PDF PROPERS DOCUMENTS!"
+  },
+  "under-construction": {
+    "path": "/under-construction",
+    "staticText": "🚧 Pàgina en construcció Aquesta secció encara està en desenvolupament. Aviat podràs participar i donar suport a la ILP per una llei electoral justa. Tornar a la pàgina principal"
+  }
+}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ca">
   <head>
     <meta charset="UTF-8" />
     <script>
@@ -16,9 +16,179 @@
     <link rel="icon" type="image/png" href="/LLEI Logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ILP Catalunya - Signa la Petició</title>
+    <style>
+      /* Senyera loader — plain CSS/HTML so it shows before the JS bundle
+         loads and keeps working even if the app bundle fails. Removed by
+         the inline script below once real "ready" signals land. */
+      #ilp-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        background: #fcdd09;
+        transition: opacity 0.4s ease;
+      }
+      #ilp-loader[data-hide="true"] {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #ilp-loader .bars {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: min(220px, 60vw);
+      }
+      #ilp-loader .bar {
+        height: 14px;
+        border-radius: 999px;
+        background: #da121a;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      #ilp-loader .label {
+        font: 600 1rem/1.4 ui-sans-serif, system-ui, sans-serif;
+        color: #1a1a1a;
+        letter-spacing: 0.02em;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #ilp-loader .bar {
+          transition: none;
+          width: 100% !important;
+        }
+        #ilp-loader {
+          transition: opacity 0.2s linear;
+        }
+      }
+    </style>
   </head>
   <body>
+    <noscript>
+      <div style="font: 16px/1.5 sans-serif; padding: 2rem; max-width: 40rem; margin: 0 auto;">
+        Aquesta pàgina necessita JavaScript per funcionar. Activa JavaScript al teu
+        navegador per veure la ILP Llei Electoral Catalana i signar la petició.
+      </div>
+      <style>
+        #ilp-loader {
+          display: none !important;
+        }
+      </style>
+    </noscript>
+
+    <div
+      id="ilp-loader"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      aria-label="Carregant…"
+    >
+      <div class="bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="label">Carregant…</div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        var loader = document.getElementById("ilp-loader");
+        if (!loader) return;
+
+        var ALREADY_SHOWN_KEY = "ilp-loader-shown";
+        var MIN_MS = 600;
+        var MAX_MS = 2500;
+
+        if (sessionStorage.getItem(ALREADY_SHOWN_KEY)) {
+          loader.setAttribute("data-hide", "true");
+          loader.style.display = "none";
+          return;
+        }
+
+        var startTime = Date.now();
+        var bars = loader.querySelectorAll(".bar");
+        var signals = { fonts: 0, windowLoad: 0, flagAssets: 0 };
+        var weights = { fonts: 0.4, windowLoad: 0.4, flagAssets: 0.2 };
+        var hidden = false;
+
+        function currentProgress() {
+          return Math.round(
+            signals.fonts * weights.fonts +
+              signals.windowLoad * weights.windowLoad +
+              signals.flagAssets * weights.flagAssets
+          );
+        }
+
+        function render() {
+          var pct = currentProgress();
+          loader.setAttribute("aria-valuenow", String(pct));
+          var stepsLit = Math.round((pct / 100) * bars.length);
+          bars.forEach(function (bar, i) {
+            bar.style.width = i < stepsLit ? "100%" : pct > i * 25 ? (pct - i * 25) * 4 + "%" : "0%";
+          });
+        }
+
+        function maybeHide() {
+          var elapsed = Date.now() - startTime;
+          var ready = currentProgress() >= 100 || elapsed >= MAX_MS;
+          if (!ready) return;
+          if (hidden) return;
+          var wait = Math.max(0, MIN_MS - elapsed);
+          setTimeout(function () {
+            hidden = true;
+            loader.setAttribute("data-hide", "true");
+            try {
+              sessionStorage.setItem(ALREADY_SHOWN_KEY, "1");
+            } catch {}
+            setTimeout(function () {
+              loader.style.display = "none";
+            }, 450);
+          }, wait);
+        }
+
+        render();
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function () {
+            signals.fonts = 1;
+            render();
+            maybeHide();
+          });
+        } else {
+          signals.fonts = 1;
+        }
+
+        if (document.readyState === "complete") {
+          signals.windowLoad = 1;
+        } else {
+          window.addEventListener("load", function () {
+            signals.windowLoad = 1;
+            render();
+            maybeHide();
+          });
+        }
+
+        // The lazy-loaded 3D flag (if it mounts) reports drei's useProgress
+        // via this event. If the flag never mounts/loads (e.g. reduced
+        // motion, no WebGL, or it's simply not in view), this signal is
+        // satisfied by the hard MAX_MS timeout instead.
+        window.addEventListener("ilp:flag-progress", function (e) {
+          signals.flagAssets = Math.max(0, Math.min(1, e.detail / 100));
+          render();
+          maybeHide();
+        });
+
+        setTimeout(maybeHide, MAX_MS);
+        render();
+        maybeHide();
+      })();
+    </script>
   </body>
 </html>

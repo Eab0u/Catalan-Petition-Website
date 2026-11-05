@@ -1,4 +1,5 @@
 ﻿import "./index.css";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Counter from "./components/Counter";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
@@ -7,12 +8,34 @@ import AnimatedContent from "./components/AnimatedContent";
 import Carousel from "./components/Carousel";
 import Faqs from "./components/FAQs";
 import RotatingQA from "./components/RotatingQA";
+import StaticFlagSvg from "./components/Flag/StaticFlagSvg";
+import { SIGN_PATH } from "./utils/signing";
+
+// Lazy: keeps three.js / react-three-fiber out of the main bundle.
+const Flag = lazy(() => import("./components/Flag/Flag"));
 
 function App() {
   const navigate = useNavigate();
+  const [videoStarted, setVideoStarted] = useState(false);
+
+  // The 3D flag's chunk (three.js + react-three-fiber) is heavy enough to
+  // noticeably delay LCP/TBT if it loads and runs immediately as part of
+  // the initial render. Defer mounting the real thing until after the page
+  // has had a chance to paint; the static SVG fallback carries the hero
+  // visually in the meantime, so nothing is missing before that.
+  const [mountFlag, setMountFlag] = useState(false);
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      const id = setTimeout(() => setMountFlag(true), 300);
+      return () => clearTimeout(id);
+    }
+    const handleLoad = () => setTimeout(() => setMountFlag(true), 300);
+    window.addEventListener("load", handleLoad);
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
 
   const goToForm = () => {
-    navigate("/sign");
+    navigate(SIGN_PATH);
   };
 
   const rotatingTexts = [
@@ -46,19 +69,42 @@ function App() {
       <main
         id="top"
         className="
-          scroll-smooth relative min-h-screen w-full overflow-hidden
+          scroll-smooth relative min-h-dvh w-full overflow-hidden
           flex flex-col items-center justify-center text-center
+          safe-area-top safe-area-bottom
           bg-white text-neutral-900
           dark:bg-black dark:text-white
         "
       >
+        {/* Soft depth: subtle senyera-tinted gradient + grain, decorative */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(218,18,26,0.08),transparent),radial-gradient(ellipse_60%_40%_at_90%_100%,rgba(252,221,9,0.06),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(218,18,26,0.12),transparent),radial-gradient(ellipse_60%_40%_at_90%_100%,rgba(252,221,9,0.08),transparent)]"
+        />
+        <div aria-hidden="true" className="grain-overlay" />
+
         {/* Content + rotating text now share the same stable z-layer */}
-        <div className="relative z-10 max-w-4xl px-6 flex flex-col items-center mt-30">
+        <div className="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center pt-36 pb-10 sm:pt-32">
+
+          {/* Signature 3D flag — above the headline, sized so it never
+              overlaps text; bigger from sm: up since there's more room.
+              mt pushes it down from the nav gap; mb clears the headline. */}
+          <div className="mb-6 h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32">
+            {mountFlag ? (
+              <Suspense fallback={<StaticFlagSvg variant="estelada" className="h-full w-full" />}>
+                <Flag variant="estelada" className="h-full w-full" />
+              </Suspense>
+            ) : (
+              <StaticFlagSvg variant="estelada" className="h-full w-full" />
+            )}
+          </div>
 
           {/* Hero Title */}
-          <h1 className="relative text-4xl md:text-6xl font-vastago font-bold leading-tight">
-            <span className="invisible block">ILP per una llei electoral justa.</span>
-            <span className="absolute inset-0 flex items-center justify-center">
+          <h1 className="relative text-hero font-vastago font-bold leading-tight w-full">
+            <span className="invisible block" style={{ whiteSpace: "nowrap" }}>
+              ILP per una llei electoral justa.
+            </span>
+            <span data-testid="hero-rotating-text" className="absolute inset-0 flex items-center justify-center px-2">
               <TextType
                 text={[
                   "Recollida de Signatures.",
@@ -70,6 +116,7 @@ function App() {
                 showCursor={true}
                 cursorCharacter="|"
                 className="whitespace-nowrap"
+                style={{ whiteSpace: "nowrap" }}
               />
             </span>
           </h1>
@@ -85,10 +132,10 @@ function App() {
           <button
             onClick={goToForm}
             className="
-              mt-10 mb-10 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold 
-              text-black dark:text-white border border-black/60 dark:border-white/30
-              bg-white/70 dark:bg-white/10 backdrop-blur-xl shadow-lg
-              transition-all duration-300 hover:scale-105 hover:bg-white/80 dark:hover:bg-white/20
+              mt-10 mb-10 cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-8 py-4 text-base font-semibold
+              bg-senyera-red text-white
+              shadow-lg
+              transition-all duration-300 hover:scale-105 hover:bg-senyera-yellow hover:text-black
             "
           >
             Signa la Petició
@@ -97,8 +144,13 @@ function App() {
           <RotatingQA items={rotatingTexts} interval={7500} fadeDuration={500} />
         </div>
 
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent to-white dark:to-black z-20" />
+        {/* Bottom fade — decorative only, must sit below real content
+            (z-10) so it never paints over the flag or anything else if
+            they land in this band on a given viewport size. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 h-24 bg-gradient-to-b from-transparent to-white dark:to-black"
+        />
       </main>
 
 
@@ -113,8 +165,8 @@ function App() {
       >
         <div
           className="
-            mx-auto max-w-8xl 
-            px-6 sm:px-10 md:px-20 md:ml-20 
+            mx-auto max-w-8xl
+            px-6 sm:px-10 md:px-20
             grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start
           "
         >
@@ -195,18 +247,43 @@ function App() {
 
           {/* Right side: video */}
           <div className="flex items-center justify-center py-15">
-            <div className="aspect-video w-full max-w-xl rounded-2xl overflow-hidden border shadow-lg border-neutral-200 dark:border-white/20">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls
-              >
-                <source src="/GDCvideo1.mp4" type="video/mp4" />
-                El teu navegador no suporta el vídeo.
-              </video>
+            <div className="relative aspect-video w-full max-w-xl rounded-2xl overflow-hidden border shadow-lg border-neutral-200 dark:border-white/20">
+              {videoStarted ? (
+                <video
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls
+                >
+                  <source src="/GDCvideo1.mp4" type="video/mp4" />
+                  El teu navegador no suporta el vídeo.
+                </video>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setVideoStarted(true)}
+                  aria-label="Reproduir el vídeo"
+                  className="group relative block h-full w-full cursor-pointer"
+                >
+                  <img
+                    src="/GDCvideo1-poster.jpg"
+                    alt=""
+                    className="h-full w-full object-cover"
+                    width={1280}
+                    height={720}
+                    loading="lazy"
+                  />
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/20 transition-colors group-hover:bg-black/30">
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                      <svg viewBox="0 0 24 24" className="ml-1 h-7 w-7 fill-black">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -264,7 +341,7 @@ function App() {
 
                 <AnimatedContent distance={60} direction="horizontal" reverse duration={1} delay={0.4}>
                   <div className="relative">
-                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-red-500 shadow-lg" />
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-senyera-red shadow-lg" />
                     <h4 className="text-xl font-semibold mb-2">Què hem fet fins ara</h4>
                     <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
                       Hem redactat el text, creat la memòria, constituït la Comissió Promotora
@@ -275,7 +352,7 @@ function App() {
 
                 <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
                   <div className="relative">
-                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-senyera-yellow shadow-lg" />
                     <h4 className="text-xl font-semibold mb-2">El nostre origen</h4>
                     <p className="leading-relaxed text-neutral-600 dark:text-gray-300">
                       L’ILP neix del treball de Catalans al Món i la FIEC, que durant anys han
@@ -321,7 +398,7 @@ function App() {
 
                 <AnimatedContent distance={60} direction="horizontal" reverse duration={1} delay={0.4}>
                   <div className="relative">
-                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-red-500 shadow-lg" />
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-senyera-red shadow-lg" />
                     <h4 className="text-xl font-semibold mb-2">
                       Qualificació i admissió a tràmit
                     </h4>
@@ -333,7 +410,7 @@ function App() {
 
                 <AnimatedContent distance={60} direction="horizontal" duration={1} delay={0.6}>
                   <div className="relative">
-                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-yellow-500 shadow-lg" />
+                    <span className="absolute -left-4 top-2 h-3 w-3 rounded-full bg-senyera-yellow shadow-lg" />
                     <h4 className="text-xl font-semibold mb-2">
                       Publicació al BOPC
                     </h4>
@@ -354,15 +431,15 @@ function App() {
       <section
         id="security"
         className="
-          relative py-35 scroll-mt-40
+          relative py-20 sm:py-28 scroll-mt-24
           bg-white text-neutral-900
           dark:bg-black dark:text-white
         "
       >
-        <div className="mx-auto max-w-8xl px-20 grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
+        <div className="mx-auto max-w-8xl px-6 sm:px-10 md:px-20 grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
           {/* Left side: text */}
-          <div className="space-y-6 text-center elf-start mt-[-100px]">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-wide mt-15">Seguretat</h2>
+          <div className="space-y-6 text-center md:self-start">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-wide">Seguretat</h2>
             <AnimatedContent distance={80} direction="vertical" duration={1} delay={0.1}>
               <p className="text-lg md:text-xl leading-relaxed text-neutral-600 dark:text-gray-300">
                 La protecció de les teves{" "}
@@ -450,7 +527,7 @@ function App() {
             grid grid-cols-1 gap-12 md:grid-cols-2
             items-center
           "
-          style={{ minHeight: "80vh" }}
+          style={{ minHeight: "80dvh" }}
         >
 
           <div className="md:col-span-2 flex justify-center w-full">

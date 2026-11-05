@@ -8,7 +8,7 @@ export default function Documents() {
   return (
     <main
       className="
-        relative min-h-screen w-full overflow-hidden flex flex-col items-center text-center
+        relative min-h-dvh w-full overflow-hidden flex flex-col items-center text-center
         bg-neutral-100 dark:bg-black transition-colors duration-300
       "
     >

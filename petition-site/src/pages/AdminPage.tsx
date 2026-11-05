@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getAuth,
@@ -11,9 +11,6 @@ import {
 import { app as firebaseApp } from "../firebase";
 import AnimatedContent from "../components/AnimatedContent";
 
-const auth = getAuth(firebaseApp);
-const provider = new GoogleAuthProvider();
-
 const API_BASE = import.meta.env.DEV ? (import.meta.env.VITE_API_BASE as string) ?? "" : "";
 
 export default function AdminPage() {
@@ -23,13 +20,19 @@ export default function AdminPage() {
   const [downloading, setDownloading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
+  // Created on first render of this route, not at module load — so a
+  // missing/invalid Firebase web config only breaks /admin, not every page
+  // (react-router statically imports every route's component up front).
+  const auth = useMemo(() => getAuth(firebaseApp), []);
+  const provider = useMemo(() => new GoogleAuthProvider(), []);
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
       setLoading(false);
     });
     return unsub;
-  }, []);
+  }, [auth]);
 
   const handleSignIn = async () => {
     setAuthError(null);
@@ -80,7 +83,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-neutral-100 dark:bg-black">
+      <main className="min-h-dvh flex items-center justify-center bg-neutral-100 dark:bg-black">
         <p className="text-neutral-500 dark:text-gray-400">Carregant...</p>
       </main>
     );
@@ -89,7 +92,7 @@ export default function AdminPage() {
   return (
     <main
       className="
-        relative min-h-screen flex items-center justify-center px-4
+        relative min-h-dvh flex items-center justify-center px-4
         bg-neutral-100 text-black dark:bg-black dark:text-white
         transition-colors duration-300
       "

@@ -4,6 +4,7 @@ import ThemeToggle from "./ThemeToggle";
 import { Menu, X } from "lucide-react";
 import AnimatedContent from "./AnimatedContent";
 import { gsap } from "gsap";
+import { SIGN_PATH } from "../utils/signing";
 
 interface NavItemConfig {
   text: string;
@@ -16,14 +17,20 @@ function NavItem({ text, onClick }: NavItemConfig) {
       type="button"
       onClick={onClick}
       className="
-        cursor-pointer whitespace-nowrap rounded-md bg-transparent px-1 text-lg md:text-xl font-medium tracking-wide
+        group relative cursor-pointer whitespace-nowrap rounded-md bg-transparent
+        px-2 py-3 text-lg md:text-xl font-medium tracking-wide
         text-neutral-900 hover:text-neutral-600
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2
         dark:text-white dark:hover:text-neutral-300
         transition-colors duration-150
       "
     >
       {text}
+      <span
+        className="
+          pointer-events-none absolute left-2 right-2 bottom-1.5 h-0.5 scale-x-0
+          bg-senyera-red transition-transform duration-200 group-hover:scale-x-100
+        "
+      />
     </button>
   );
 }
@@ -56,10 +63,10 @@ export default function NavBar() {
   }, [open]);
 
   return (
-    <header className="fixed left-1/2 top-6 z-50 w-full max-w-7xl -translate-x-1/2 px-4">
+    <header className="fixed left-1/2 top-[max(1.5rem,env(safe-area-inset-top))] z-50 w-full max-w-7xl -translate-x-1/2 px-4">
       <div
         className="
-          flex w-full items-center justify-between rounded-3xl border px-6 py-4 shadow-lg backdrop-blur-xl
+          flex w-full items-center justify-between rounded-3xl border px-4 py-3 sm:px-6 sm:py-4 shadow-lg backdrop-blur-xl
           bg-white/60 border-neutral-300 text-neutral-900
           dark:bg-white/10 dark:border-white/30 dark:text-white
           transition-colors duration-300
@@ -72,7 +79,7 @@ export default function NavBar() {
               loading="lazy"
               src="/LLEI Logo.png"
               alt="LLEI Logo"
-              className="h-12 w-12 object-contain cursor-pointer"
+              className="h-11 w-11 sm:h-12 sm:w-12 object-contain cursor-pointer"
             />
           </a>
         </div>
@@ -88,11 +95,10 @@ export default function NavBar() {
         <div className="hidden md:flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate("/sign")}
+            onClick={() => navigate(SIGN_PATH)}
             className="
               cursor-pointer shrink-0 whitespace-nowrap rounded-2xl px-6 py-3 text-sm font-semibold
-              bg-neutral-900 text-white hover:bg-neutral-800
-              dark:bg-white dark:text-black dark:hover:bg-neutral-200
+              bg-senyera-red text-white hover:bg-senyera-yellow hover:text-black
               transition-colors duration-150
             "
           >
@@ -107,7 +113,10 @@ export default function NavBar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden focus:outline-none text-neutral-900 dark:text-white"
+          aria-expanded={open}
+          aria-controls="mobile-dropdown"
+          aria-label={open ? "Tancar el menú" : "Obrir el menú"}
+          className="md:hidden flex h-11 w-11 items-center justify-center text-neutral-900 dark:text-white"
         >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -121,6 +130,7 @@ export default function NavBar() {
             md:hidden mt-2 flex flex-col items-center gap-4 rounded-3xl border border-neutral-300
             bg-white/70 dark:bg-black/70 dark:border-white/30
             text-neutral-900 dark:text-white shadow-lg backdrop-blur-xl py-6
+            safe-area-bottom max-h-[75dvh] overflow-y-auto
           "
         >
           {navItems.map((item, index) => (
@@ -152,13 +162,12 @@ export default function NavBar() {
             <button
               type="button"
               onClick={() => {
-                navigate("/sign");
+                navigate(SIGN_PATH);
                 setOpen(false);
               }}
               className="
                 mt-2 cursor-pointer whitespace-nowrap rounded-2xl px-6 py-3 text-sm font-semibold
-                bg-neutral-900 text-white hover:bg-neutral-800
-                dark:bg-white dark:text-black dark:hover:bg-neutral-200
+                bg-senyera-red text-white hover:bg-senyera-yellow hover:text-black
                 transition-colors duration-150
               "
             >
