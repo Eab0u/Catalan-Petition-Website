@@ -84,7 +84,7 @@ function App() {
         <div aria-hidden="true" className="grain-overlay" />
 
         {/* Content + rotating text now share the same stable z-layer */}
-        <div className="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center pt-36 pb-10 sm:pt-32">
+        <div className="relative z-10 w-full max-w-4xl px-6 flex flex-col items-center pt-36 pb-10 sm:pt-40">
 
           {/* Signature 3D flag — above the headline, sized so it never
               overlaps text; bigger from sm: up since there's more room.
