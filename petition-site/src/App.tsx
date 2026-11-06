@@ -91,11 +91,11 @@ function App() {
               mt pushes it down from the nav gap; mb clears the headline. */}
           <div className="mb-6 h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32">
             {mountFlag ? (
-              <Suspense fallback={<StaticFlagSvg variant="estelada" className="h-full w-full" />}>
-                <Flag variant="estelada" className="h-full w-full" />
+              <Suspense fallback={<StaticFlagSvg variant="senyera" className="h-full w-full" />}>
+                <Flag variant="senyera" className="h-full w-full" />
               </Suspense>
             ) : (
-              <StaticFlagSvg variant="estelada" className="h-full w-full" />
+              <StaticFlagSvg variant="senyera" className="h-full w-full" />
             )}
           </div>
 
