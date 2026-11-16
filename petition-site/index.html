@@ -3,6 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <script>
+      // AOC only has the site root registered as the VALId redirect URI (no
+      // path), so the backend sends it here for both the OAuth and sign-page
+      // callbacks. Forward to the real handler before React ever renders.
+      (function () {
+        if (window.location.pathname !== "/") return;
+        var params = new URLSearchParams(window.location.search);
+        var target =
+          (params.has("code") && params.has("state")) || (params.has("error") && params.has("state"))
+            ? "/api/auth/callback"
+            : params.has("signature_code") || params.has("result")
+              ? "/api/sign/callback"
+              : null;
+        if (target) window.location.replace(target + window.location.search);
+      })();
+    </script>
+    <script>
       (function () {
         try {
           const stored = localStorage.getItem("theme");

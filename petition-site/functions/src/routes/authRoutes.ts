@@ -46,11 +46,11 @@ function getValidConfig(): ValidConfig {
   }
   // IMPORTANT: the values of VALID_REDIRECT_URI and VALID_SIGN_CALLBACK_URI
   // must be byte-for-byte identical to what is registered with Consorci AOC.
-  // Some OAuth servers do exact string matching, so "http://localhost:5000/..."
-  // and "http://127.0.0.1:5000/..." are treated as different URIs.
-  // Dev URIs to give AOC (choose one form and stick with it):
-  //   http://127.0.0.1:5000/api/auth/callback
-  //   http://127.0.0.1:5000/api/sign/callback
+  // AOC only has the site root registered (no path) for both, so both vars
+  // are set to that root URL — the frontend's inline redirect script (in
+  // index.html, runs before React renders) forwards the root hit to
+  // /api/auth/callback or /api/sign/callback based on the query params VALId
+  // sends back.
   return { baseUrl, clientId, clientSecret, redirectUri, signCallbackUri };
 }
 
